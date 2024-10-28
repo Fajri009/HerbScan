@@ -37,6 +37,9 @@ class SplashActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
+        userPreference = UserPreference(this)
+        userModel = userPreference.getUser()
+
         Handler(Looper.getMainLooper()).postDelayed({
             try {
                 if (userModel.rememberMe) {
