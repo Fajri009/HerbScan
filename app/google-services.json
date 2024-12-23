@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "290737326493",
+    "firebase_url": "https://herbscan-e3d0e-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "herbscan-e3d0e",
+    "storage_bucket": "herbscan-e3d0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290737326493:android:b6b09c5d08ef0c95cc4774",
+        "android_client_info": {
+          "package_name": "com.example.herbscan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGwDoMHOm3eZ2Wi7q3lY1e25gnbpDf1fQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
