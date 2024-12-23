@@ -1,3 +1,41 @@
 <resources>
     <string name="app_name">HerbScan</string>
+    <string name="email">Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="confirm_password">Konfirmasi Kata Sandi</string>
+    <string name="invalid_email">Gunakan format email</string>
+    <string name="invalid_password">Kata sandi tidak boleh kurang dari 8 karakter</string>
+    <string name="press_back_again">Tekan kembali lagi untuk keluar</string>
+    <string name="empty_form">Silahkan isi kolom formulir terlebih dahulu</string>
+    <string name="invalid_form">Silahkan isi semua kolom formulir sesuai dengan ketentuan</string>
+    <string name="pass_not_match">Kata sandi tidak cocok</string>
+
+    <!-- Login -->
+    <string name="login">Masuk</string>
+    <string name="login_illust">Ilustrasi Masuk</string>
+    <string name="login_desc">Hai, masuk untuk melanjutkan</string>
+    <string name="remember_me">Ingat saya</string>
+    <string name="forgot_pass">Lupa kata sandi?</string>
+    <string name="dont_have_acc">Belum punya akun?</string>
+    <string name="incorrect_login">Email atau kata sandi salah</string>
+
+    <!-- Register -->
+    <string name="register">Daftar</string>
+    <string name="register_illust">Ilustrasi Daftar</string>
+    <string name="register_desc">Buat akun untuk melanjutkan</string>
+    <string name="first_name">Nama Depan</string>
+    <string name="last_name">Nama Belakang</string>
+    <string name="phone_number">Nomor Telepon</string>
+    <string name="try_login">Daftar Sukses! Silakan coba login ke akun Anda</string>
+    <string name="email_registered">Email sudah terdaftar. Silakan gunakan email lain.</string>
+
+    <!-- Forgot Pass -->
+    <string name="forgot_pass_title">Ubah Kata Sandi</string>
+    <string name="forgot_pass_illust">Ilustrasi Lupa Kata Sandi</string>
+    <string name="forgot_pass_desc">Masukkan email untuk melanjutkan</string>
+    <string name="send">Kirim</string>
+    <string name="remember_pass">Ingat kata sandi Anda?</string>
+    <string name="send_success">Reset kata sandi berhasil dikirim ke email yang terdaftar</string>
+    
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
