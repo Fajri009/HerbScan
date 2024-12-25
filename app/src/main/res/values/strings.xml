@@ -9,6 +9,12 @@
     <string name="empty_form">Silahkan isi kolom formulir terlebih dahulu</string>
     <string name="invalid_form">Silahkan isi semua kolom formulir sesuai dengan ketentuan</string>
     <string name="pass_not_match">Kata sandi tidak cocok</string>
+    <string name="back">Kembali</string>
+    <string name="save">Simpan</string>
+    <string name="illust_confirm_dialog">Ilustrasi Konfirmasi Dialog</string>
+    <string name="success">Berhasil</string>
+    <string name="changes_success">Perubahan berhasil</string>
+    <string name="ok">Oke</string>
 
     <!-- Login -->
     <string name="login">Masuk</string>
@@ -35,7 +41,45 @@
     <string name="forgot_pass_desc">Masukkan email untuk melanjutkan</string>
     <string name="send">Kirim</string>
     <string name="remember_pass">Ingat kata sandi Anda?</string>
-    <string name="send_success">Reset kata sandi berhasil dikirim ke email yang terdaftar</string>
-    
+    <string name="send_success">Ubah kata sandi berhasil dikirim ke email yang terdaftar</string>
+
+    <!-- Home -->
+    <string name="home">Beranda</string>
+
+    <!-- Camera -->
+    <string name="camera">Kamera</string>
+
+    <!-- Profile -->
+    <string name="profile">Profil</string>
+    <string name="bubble_background">Latar Belakang Gelembung</string>
+    <string name="user_fullname">Nama Lengkap Pengguna</string>
+    <string name="user_email">Email Pengguna</string>
+    <string name="divider">Pemisah</string>
+    <string name="next">Selanjutnya</string>
+    <string name="change_profile">Ubah Profil</string>
+    <string name="history">Riwayat</string>
+    <string name="favorite">Favorit</string>
+    <string name="language">Bahasa</string>
+    <string name="logout">Keluar</string>
+
+    <!-- Edit Profile -->
+    <string name="edit_profile">Ubah Profil</string>
+    <string name="icon_edit_profile">Ikon Ubah Profil</string>
+    <string name="cancel">Batal</string>
+    <string name="icon_capture_camera">Ikon Tangkap Kamera</string>
+    <string name="icon_rotate_camera">Ikon Beralih Kamera</string>
+    <string name="icon_close">Ikon Tutup</string>
+    <string name="icon_edit_camera">Ikon Ubah Kamera</string>
+    <string name="take_photo">Ambil Foto</string>
+    <string name="icon_gallery">Ikon Galeri</string>
+    <string name="choose_gallery">Pilih dari galeri</string>
+    <string name="icon_delete">Ikon Hapus</string>
+    <string name="delete_photo">Hapus foto</string>
+
+    <!-- Change Password -->
+    <string name="change_password">Ubah Kata Sandi</string>
+    <string name="will_send">*Anda akan menerima email untuk mengubah kata sandi Anda</string>
+    <string name="success_send">Permintaan perubahan kata sandi telah dikirim ke email yang terdaftar</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -11,5 +11,4 @@ data class UserAuth(
     val lastName: String? = null,
     val email: String? = null,
     val phoneNumber: String? = null,
-    val password: String? = null
 ): Parcelable

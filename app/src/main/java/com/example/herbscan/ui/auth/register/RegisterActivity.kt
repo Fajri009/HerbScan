@@ -2,8 +2,6 @@ package com.example.herbscan.ui.auth.register
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -67,10 +65,10 @@ class RegisterActivity : AppCompatActivity() {
             )
 
             val user = hashMapOf(
-                "nama depan" to etFirstName,
-                "nama belakang" to etLastName,
+                "firstName" to etFirstName,
+                "lastName" to etLastName,
                 "email" to etEmail,
-                "nomor telepon" to etPhoneNumber,
+                "phoneNumber" to etPhoneNumber
             )
 
             viewModel.register(auth, user).observe(this) { result ->
