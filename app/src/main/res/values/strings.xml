@@ -10,11 +10,14 @@
     <string name="invalid_form">Silahkan isi semua kolom formulir sesuai dengan ketentuan</string>
     <string name="pass_not_match">Kata sandi tidak cocok</string>
     <string name="back">Kembali</string>
+    <string name="cloud_background">Latar Belakang Awan</string>
     <string name="save">Simpan</string>
     <string name="illust_confirm_dialog">Ilustrasi Konfirmasi Dialog</string>
     <string name="success">Berhasil</string>
     <string name="changes_success">Perubahan berhasil</string>
     <string name="ok">Oke</string>
+    <string name="plant_availability">Ketersediaan</string>
+    <string name="recommendation_for">Rekomendasi untuk %1$s</string>
 
     <!-- Login -->
     <string name="login">Masuk</string>
@@ -43,8 +46,40 @@
     <string name="remember_pass">Ingat kata sandi Anda?</string>
     <string name="send_success">Ubah kata sandi berhasil dikirim ke email yang terdaftar</string>
 
+    <!-- Item -->
+    <string name="image_plant">Gambar Tanaman</string>
+    <string name="plant_name">Nama Tanaman</string>
+    <string name="plant_scientific_name">Nama Ilmiah Tanaman</string>
+    <string name="icon_recommend">Ikon Rekomendasi</string>
+    <string name="tv_recommend">Rekomendasi untuk sakit perut</string>
+
     <!-- Home -->
     <string name="home">Beranda</string>
+    <string name="welcome">Selamat Datang,</string>
+    <string name="user_firstname">Nama Pengguna</string>
+    <string name="icon_search">Ikon Cari</string>
+    <string name="category">Kategori</string>
+    <string name="all">Semua</string>
+    <string name="leaf">Daun</string>
+    <string name="fruit">Buah</string>
+    <string name="root">Akar</string>
+    <string name="search">Pencarian</string>
+
+    <!-- Detail -->
+    <string name="detail_background">Latar Belakang Detail</string>
+    <string name="icon_fav">Ikon Favorit</string>
+    <string name="icon_unfav">Ikon Tidak Favorit</string>
+    <string name="discussion">Diskusi</string>
+    <string name="look_discussion">Lihat Diskusi</string>
+    <string name="last_discussion">Terakhir 1 jam yang lalu</string>
+    <string name="availability">Ketersediaan</string>
+    <string name="habitat">Habitat</string>
+    <string name="plant_habitat">Habitat Tanaman</string>
+    <string name="biodata">Biodata</string>
+    <string name="description">Deskripsi</string>
+    <string name="benefit">Manfaat</string>
+    <string name="how_to_use">Cara Penggunaan</string>
+    <string name="side_effect">Efek Samping</string>
 
     <!-- Camera -->
     <string name="camera">Kamera</string>

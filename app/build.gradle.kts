@@ -70,6 +70,7 @@ dependencies {
 
     // Glide
     implementation(libs.glide)
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
 
     // uCrop
     implementation(libs.ucrop)
@@ -78,4 +79,7 @@ dependencies {
     // CameraX
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.view)
+
+    // ViewPager2
+    implementation(libs.androidx.viewpager2)
 }

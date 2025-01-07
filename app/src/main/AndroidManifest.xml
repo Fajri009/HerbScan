@@ -20,9 +20,18 @@
         android:theme="@style/Theme.HerbScan"
         tools:targetApi="31">
         <activity
+            android:name=".ui.discussion.DiscussionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.detail.DetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.search.SearchActivity"
+            android:exported="false" />
+        <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.profile.editProfile.camera.CameraProfileActivity"
             android:exported="false" />

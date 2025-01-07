@@ -4,6 +4,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.data.network.firebase.Category
+import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.data.network.firebase.UserAuth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -19,6 +21,8 @@ class HerbScanRepository(
     storage: FirebaseStorage
 ) {
     private val userRef = db.reference.child("users")
+    private val categoryRef = db.reference.child("category")
+    private val plantRef = db.reference.child("plant")
     private val storageRef = storage.reference
 
     fun register(
@@ -84,11 +88,11 @@ class HerbScanRepository(
                 emit(Result.Error("Failed to send password reset email : ${e.message}"))
             }
         }
-    
+
     fun getCurrentUser(): LiveData<Result<UserAuth, String>> =
         liveData {
             emit(Result.Loading)
-            
+
             try {
                 val currentUser = firebaseAuth.currentUser
                 if (currentUser != null) {
@@ -103,6 +107,73 @@ class HerbScanRepository(
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get current user : ${e.message}")
                 emit(Result.Error("Failed to get current user : ${e.message}"))
+            }
+        }
+
+    fun getCategory(): LiveData<Result<ArrayList<Category>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val categorySnapshot = categoryRef.get().await()
+                val categoryList = ArrayList<Category>()
+
+                for (categoryData in categorySnapshot.children) {
+                    val category = categoryData.getValue(Category::class.java)
+                    if (category != null) {
+                        categoryList.add(category)
+                    }
+                }
+
+                emit(Result.Success(categoryList))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get category : ${e.message}")
+                emit(Result.Error("Failed to get category : ${e.message}"))
+            }
+        }
+
+    fun getAllPlant(): LiveData<Result<ArrayList<Plant>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+                val plantList = ArrayList<Plant>()
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null) {
+                        plantList.add(plant)
+                    }
+                }
+
+                Log.i(TAG, "getAllPlant (plantList): $plantList")
+                emit(Result.Success(plantList))
+            } catch (e: Exception) {
+                Log .e(TAG, "Failed to get all plant : ${e.message}")
+                emit(Result.Error("Failed to get all plant : ${e.message}"))
+            }
+        }
+
+    fun addFavoritePlant(plant: Plant): LiveData<Result<String, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val currentUser = firebaseAuth.currentUser
+
+                if (currentUser != null) {
+                    val uid = currentUser.uid
+                    val favoriteRef = userRef.child(uid).child("favorite")
+
+                    favoriteRef.setValue(plant).await()
+                    emit(Result.Success("Berhasil menambahkan tanaman ke favorite"))
+                } else {
+                    emit(Result.Error("Anda belum login"))
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to add favorite plant : ${e.message}")
+                emit(Result.Error("Failed to add favorite plant : ${e.message}"))
             }
         }
 

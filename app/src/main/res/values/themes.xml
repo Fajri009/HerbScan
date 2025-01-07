@@ -251,7 +251,7 @@
     <!-- Text Xxs -->
     <style name="TextAppearance.AppCompat.TextXxs">
         <item name="android:textSize">10sp</item>
-        <item name="android:layout_height">18dp</item>
+        <item name="android:layout_height">16dp</item>
     </style>
 
     <style name="TextAppearance.AppCompat.TextXxs.Regular">
@@ -270,7 +270,35 @@
         <item name="android:fontFamily">@font/poppins_bold</item>
     </style>
 
+    <!-- Text Xxxs -->
+    <style name="TextAppearance.AppCompat.TextXxxs">
+        <item name="android:textSize">8sp</item>
+        <item name="android:layout_height">12dp</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.TextXxxs.Regular">
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.TextXxxs.Medium">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.TextXxxs.Semibold">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.TextXxxs.Bold">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+    </style>
+
     <declare-styleable name="IconEditText">
         <attr name="icon" format="reference" />
     </declare-styleable>
+
+    <style name="roundImage" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+        <item name="color">@color/shades_50</item>
+    </style>
 </resources>
