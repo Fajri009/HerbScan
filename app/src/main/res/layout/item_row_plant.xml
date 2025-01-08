@@ -29,10 +29,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintStart_toEndOf="@id/iv_plant"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_popularity" >
+            app:layout_constraintEnd_toStartOf="@id/tv_availability" >
 
             <TextView
                 android:id="@+id/tv_plant_name"
@@ -51,6 +52,7 @@
                 android:layout_marginTop="2dp"/>
 
             <LinearLayout
+                android:id="@+id/layout_recommend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -70,6 +72,7 @@
                     android:id="@+id/tv_recommend"
                     style="@style/TextAppearance.AppCompat.TextXxxs.Regular"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/tv_recommend"
                     android:textColor="@color/neutral_500"
                     android:layout_marginStart="5dp" />
@@ -77,9 +80,9 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_popularity"
+            android:id="@+id/tv_availability"
             style="@style/TextAppearance.AppCompat.TextXxs.Regular"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:text="@string/plant_availability"
             android:textColor="@color/success_900"
             android:gravity="end"

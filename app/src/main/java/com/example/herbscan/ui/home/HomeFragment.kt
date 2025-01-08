@@ -22,7 +22,7 @@ import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
 import com.example.herbscan.ui.detail.tab.DescriptionFragment
-import com.example.herbscan.ui.home.search.SearchActivity
+import com.example.herbscan.ui.search.SearchActivity
 import java.util.ArrayList
 
 class HomeFragment : Fragment() {
@@ -56,6 +56,22 @@ class HomeFragment : Fragment() {
         getCurrentUser()
         showListCategory()
         showListPlant()
+
+        viewModel.getImagePlant().observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
 
         return binding.root
     }

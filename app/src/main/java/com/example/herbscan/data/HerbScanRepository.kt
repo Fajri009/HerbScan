@@ -155,6 +155,48 @@ class HerbScanRepository(
             }
         }
 
+    fun getPlantByName(namePlant: String): LiveData<Result<ArrayList<Plant>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+                val plantList = ArrayList<Plant>()
+
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null) {
+                        if (plant.name.contains(namePlant, ignoreCase = true)) {
+                            plantList.add(plant)
+                        }
+                    }
+                }
+
+                Log.i(TAG, "getPlantByName (plantList): $plantList")
+                emit(Result.Success(plantList))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get plant by name : ${e.message}")
+                emit(Result.Error("Failed to get plant by name : ${e.message}"))
+            }
+        }
+
+    fun getImagePlant(): LiveData<Result<String, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val imagePlant = storageRef.child("plant/okra.jpg")
+
+                val downloadUrl = imagePlant.downloadUrl.await()
+
+                Log.i(TAG, "getImagePlant: ${downloadUrl}")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get image plant : ${e.message}")
+                emit(Result.Error("Failed to get image plant : ${e.message}"))
+            }
+        }
+
     fun addFavoritePlant(plant: Plant): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
