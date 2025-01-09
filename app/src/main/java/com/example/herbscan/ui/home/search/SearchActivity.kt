@@ -1,4 +1,4 @@
-package com.example.herbscan.ui.search
+package com.example.herbscan.ui.home.search
 
 import android.content.Intent
 import android.os.Bundle

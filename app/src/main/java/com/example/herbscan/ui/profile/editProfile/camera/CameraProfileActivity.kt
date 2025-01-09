@@ -113,6 +113,7 @@ class CameraProfileActivity : AppCompatActivity() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent()
                     intent.putExtra(EXTRA_CAMERAX_IMAGE, output.savedUri.toString())
+                    Log.i(TAG, "onImageSaved: ${output.savedUri}")
                     setResult(CAMERAX_RESULT, intent)
                     finish()
                 }

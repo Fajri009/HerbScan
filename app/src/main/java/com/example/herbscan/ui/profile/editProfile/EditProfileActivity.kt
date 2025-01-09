@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.view.WindowManager.*
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -85,7 +86,6 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
                 getImageUri(this, bitmap)
             }
             else -> {
-                // Handle other drawable types or throw an exception if needed
                 null
             }
         }
@@ -129,10 +129,19 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
             .setView(popupBinding.root)
             .setCancelable(false)
             .create()
+
+        val window = alertDialog.window
+        window?.setBackgroundDrawableResource(R.drawable.pop_up_background)
+        val layoutParams = window?.attributes
+        layoutParams?.width = LayoutParams.WRAP_CONTENT
+        window?.attributes = layoutParams
+
         alertDialog.show()
 
         popupBinding.btnOk.setOnClickListener {
-            finish()
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("navigateToProfile", true)
+            startActivity(intent)
             alertDialog.dismiss()
         }
     }
@@ -141,7 +150,7 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
         binding.ivProfilePicture.setImageURI(imageUri)
     }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)

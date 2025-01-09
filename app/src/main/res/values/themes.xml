@@ -301,4 +301,10 @@
         <item name="cornerSize">10dp</item>
         <item name="color">@color/shades_50</item>
     </style>
+
+    <style name="resultRoundImage" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+        <item name="color">@color/shades_50</item>
+    </style>
 </resources>

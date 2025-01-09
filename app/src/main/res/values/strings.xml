@@ -66,6 +66,7 @@
     <string name="search">Pencarian</string>
 
     <!-- Detail -->
+    <string name="detail">Detail</string>
     <string name="detail_background">Latar Belakang Detail</string>
     <string name="icon_fav">Ikon Favorit</string>
     <string name="icon_unfav">Ikon Tidak Favorit</string>
@@ -83,6 +84,15 @@
 
     <!-- Camera -->
     <string name="camera">Kamera</string>
+    <string name="icon_info">Ikon Info</string>
+    <string name="illust_info_camera">Ilustrasi Info Kamera</string>
+    <string name="point_the_camera">Arahkan kamera ke\ntanaman di depanmu</string>
+    <string name="detail_info_camera">Kami akan memberikan\ninformasi mengenai detail\ndari tanaman tersebut</string>
+
+    <!-- Result -->
+    <string name="percentage">90%</string>
+    <string name="accuracy">Akurasi</string>
+    <string name="arrow_detail">Arah panah detail</string>
 
     <!-- Profile -->
     <string name="profile">Profil</string>

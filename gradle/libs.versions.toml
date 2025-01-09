@@ -20,9 +20,7 @@ firebaseStorage = "21.0.1"
 glide = "4.16.0"
 ucrop = "2.2.8"
 ucropVersion = "2.2.8-native"
-cameraCore = "1.4.1"
-cameraView = "1.4.1"
-cameraLifecycle = "1.4.1"
+cameraxVersion = "1.4.1"
 activityKtx = "1.9.0"
 fragmentKtx = "1.7.1"
 viewpager2 = "1.1.0"
@@ -46,9 +44,10 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 ucrop-v228native = { module = "com.github.yalantis:ucrop", version.ref = "ucropVersion" }
-androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
-androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
-androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraxVersion" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraxVersion" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraxVersion" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraxVersion" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }

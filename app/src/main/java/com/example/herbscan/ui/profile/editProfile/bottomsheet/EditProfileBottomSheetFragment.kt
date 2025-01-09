@@ -18,6 +18,7 @@ import androidx.core.net.toUri
 import com.example.herbscan.R
 import com.example.herbscan.databinding.FragmentEditProfileBottomSheetBinding
 import com.example.herbscan.ui.profile.editProfile.camera.CameraProfileActivity
+import com.example.herbscan.ui.profile.editProfile.camera.CameraProfileActivity.Companion.CAMERAX_RESULT
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.yalantis.ucrop.UCrop
 import java.io.File
@@ -29,7 +30,7 @@ class EditProfileBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentEditProfileBottomSheetBinding.inflate(inflater, container, false)
         dialog?.setCanceledOnTouchOutside(false)
 
@@ -86,9 +87,10 @@ class EditProfileBottomSheetFragment : BottomSheetDialogFragment() {
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        if (it.resultCode == RESULT_OK) {
+        if (it.resultCode == CAMERAX_RESULT) {
             val imageUri = it.data?.getStringExtra(CameraProfileActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
             if (imageUri != null) {
+                startCrop(imageUri)
                 onImageSelectedListener?.onImageSelected(imageUri)
             }
             dismiss()
