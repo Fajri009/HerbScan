@@ -17,6 +17,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+//        ndk {
+//            abiFilters "armeabi-v7a", "arm64-v8a"
+//        }
     }
 
     buildTypes {
@@ -37,6 +41,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        mlModelBinding = true
     }
 }
 
@@ -69,7 +74,7 @@ dependencies {
 
     // Glide
     implementation(libs.glide)
-    implementation("jp.wasabeef:glide-transformations:4.3.0")
+    implementation(libs.glide.transformations)
 
     // uCrop
     implementation(libs.ucrop)
@@ -83,4 +88,12 @@ dependencies {
 
     // ViewPager2
     implementation(libs.androidx.viewpager2)
+
+    // TensorFlow Lite
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
+    implementation(libs.tensorflow.lite)
+    // This dependency adds the necessary TF op support.
+    implementation(libs.tensorflow.lite.select.tf.ops)
+
 }

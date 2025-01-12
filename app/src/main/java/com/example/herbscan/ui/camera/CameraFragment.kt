@@ -1,8 +1,15 @@
 package com.example.herbscan.ui.camera
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +22,8 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.camera.camera2.interop.Camera2CameraInfo
+import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -24,13 +33,17 @@ import androidx.core.content.ContextCompat
 import com.example.herbscan.R
 import com.example.herbscan.databinding.FragmentCameraBinding
 import com.example.herbscan.databinding.PopUpInfoBinding
+import com.example.herbscan.tflite.TFLiteHelper
 import com.example.herbscan.ui.camera.result.ResultActivity
 import com.example.herbscan.utils.Utils
+import java.io.FileDescriptor
+import java.io.IOException
 
 class CameraFragment : Fragment() {
     private lateinit var binding: FragmentCameraBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
+    private val tfLiteHelper by lazy { TFLiteHelper(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -147,8 +160,15 @@ class CameraFragment : Fragment() {
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val rotation = computeRelativeRotation()
+                    val bitmap = savedUri.toBitmap()?.rotateBitmap(rotation.toFloat())
+                    val result = tfLiteHelper.classifyImage(bitmap!!)
+
                     val intent = Intent(requireContext(), ResultActivity::class.java)
                     intent.putExtra(ResultActivity.IMAGE_PLANT, output.savedUri.toString())
+                    intent.putExtra(ResultActivity.PLANT_NAME, result.first)
+                    intent.putExtra(ResultActivity.PROBABILITY, result.second)
                     startActivity(intent)
                 }
 
@@ -179,6 +199,47 @@ class CameraFragment : Fragment() {
                 imageCapture?.targetRotation = rotation
             }
         }
+    }
+
+    private fun Uri.toBitmap(): Bitmap? {
+        try {
+            val parcelFileDescriptor = requireContext().contentResolver.openFileDescriptor(this, "r")
+            val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
+            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            parcelFileDescriptor.close()
+            return image
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private fun Bitmap.rotateBitmap(degrees: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
+    }
+
+    private fun computeRelativeRotation(): Int {
+        val cameraManager = context?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = getCameraId()
+        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
+        val sensorOrientationDegrees = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
+        val sign = if (characteristics.get(CameraCharacteristics.LENS_FACING) ==
+            CameraCharacteristics.LENS_FACING_FRONT
+        ) 1 else -1
+        val windowManager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val rotation = windowManager.defaultDisplay.rotation
+        return (sensorOrientationDegrees - rotation * sign + 360) % 360
+    }
+
+    @androidx.annotation.OptIn(ExperimentalCamera2Interop::class)
+    private fun getCameraId(): String {
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
+        val cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get()
+        val camera = cameraProvider.bindToLifecycle(this, cameraSelector)
+        val camera2CameraInfo = Camera2CameraInfo.from(camera.cameraInfo)
+        return camera2CameraInfo.cameraId
     }
 
     companion object {

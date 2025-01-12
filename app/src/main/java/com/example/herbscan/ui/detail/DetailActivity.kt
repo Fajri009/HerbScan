@@ -22,15 +22,15 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val plant = intent.getParcelableExtra<Plant>(EXTRA_PLANT)
+        val plantHome = intent.getParcelableExtra<Plant>(EXTRA_PLANT)
 
         binding.apply {
             ivBack.setOnClickListener {
                 finish()
             }
-            tvPlantName.text = plant!!.name
+            tvPlantName.text = plantHome!!.name
             Glide.with(this@DetailActivity)
-                .load(plant.picture)
+                .load(plantHome.picture)
                 .into(ivPlant)
             btnLookDiscussion.setOnClickListener {
                 val intent = Intent(this@DetailActivity, DiscussionActivity::class.java)

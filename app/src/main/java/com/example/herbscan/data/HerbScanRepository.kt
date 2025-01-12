@@ -186,11 +186,11 @@ class HerbScanRepository(
             emit(Result.Loading)
 
             try {
-                val imagePlant = storageRef.child("plant/okra.jpg")
+                val imagePlant = storageRef.child("plant/nangka mini.jpg")
 
                 val downloadUrl = imagePlant.downloadUrl.await()
 
-                Log.i(TAG, "getImagePlant: ${downloadUrl}")
+                Log.i(TAG, "classifyImage: $downloadUrl")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get image plant : ${e.message}")
                 emit(Result.Error("Failed to get image plant : ${e.message}"))

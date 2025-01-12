@@ -93,6 +93,7 @@
     <string name="percentage">90%</string>
     <string name="accuracy">Akurasi</string>
     <string name="arrow_detail">Arah panah detail</string>
+    <string name="one_hundred_percent">100%</string>
 
     <!-- Profile -->
     <string name="profile">Profil</string>

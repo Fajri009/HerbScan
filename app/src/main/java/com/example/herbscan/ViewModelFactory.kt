@@ -7,6 +7,7 @@ import com.example.herbscan.data.HerbScanRepository
 import com.example.herbscan.ui.auth.forgotpass.ForgotPassViewModel
 import com.example.herbscan.ui.auth.login.LoginViewModel
 import com.example.herbscan.ui.auth.register.RegisterViewModel
+import com.example.herbscan.ui.camera.result.ResultViewModel
 import com.example.herbscan.ui.home.HomeViewModel
 import com.example.herbscan.ui.profile.ProfileViewModel
 import com.example.herbscan.ui.profile.changePassword.ChangePasswordViewModel
@@ -32,6 +33,9 @@ class ViewModelFactory private constructor(private val herbScanRepository: HerbS
             }
             modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                 SearchViewModel(herbScanRepository) as T
+            }
+            modelClass.isAssignableFrom(ResultViewModel::class.java) -> {
+                ResultViewModel(herbScanRepository) as T
             }
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(herbScanRepository) as T
