@@ -34,7 +34,7 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var userAuth: UserAuth
     private val viewModel by viewModels<EditProfileViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

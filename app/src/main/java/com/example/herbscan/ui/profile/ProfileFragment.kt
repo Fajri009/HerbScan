@@ -29,7 +29,7 @@ import com.example.herbscan.data.network.firebase.UserAuth
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private val viewModel by viewModels<ProfileViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(requireContext())
     }
 
     private var userModel = User()

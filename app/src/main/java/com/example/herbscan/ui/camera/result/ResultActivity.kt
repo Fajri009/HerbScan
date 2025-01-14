@@ -10,6 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
+import com.example.herbscan.data.local.preference.user.User
+import com.example.herbscan.data.local.preference.user.UserPreference
+import com.example.herbscan.data.local.room.HistoryEntity
 import com.example.herbscan.databinding.ActivityResultBinding
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.data.network.Result
@@ -18,9 +21,11 @@ import com.example.herbscan.data.network.firebase.Plant
 class ResultActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
     private val viewModel by viewModels<ResultViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(this)
     }
     private lateinit var plantResult: Plant
+    private var userModel = User()
+    private lateinit var userPreference: UserPreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,10 +33,15 @@ class ResultActivity() : AppCompatActivity() {
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userPreference = UserPreference(this)
+        userModel = userPreference.getUser()
+
         val imagePlant = intent.getStringExtra(IMAGE_PLANT)
         val probability = intent.getStringExtra(PROBABILITY)
         val namePlant = intent.getStringExtra(PLANT_NAME)
         val namePlantPure = namePlant?.substringAfterLast("(")?.removeSuffix(")")?.trim()
+        val date = intent.getStringExtra(DATE)
+        val fromPage = intent.getStringExtra(FROM_PAGE)
         Log.i(TAG, "classifyImage: namePlant = $namePlantPure")
 
         binding.apply {
@@ -44,7 +54,7 @@ class ResultActivity() : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            getPlantByName(namePlantPure!!)
+            getPlantByName(imagePlant, namePlantPure!!, userModel.uid!!, date!!, probability!!, fromPage!!)
 
 //            tvPercentage.text = "$percetage%"
             val percentageText = tvPercentage.text.toString()
@@ -62,7 +72,14 @@ class ResultActivity() : AppCompatActivity() {
         }
     }
 
-    private fun getPlantByName(namePlant: String) {
+    private fun getPlantByName(
+        imagePlant: String,
+        namePlant: String,
+        uid: String,
+        date: String,
+        probability: String,
+        fromPage: String
+    ) {
         viewModel.getIPlantByName(namePlant).observe(this) { result ->
             if (result != null) {
                 when (result) {
@@ -76,6 +93,20 @@ class ResultActivity() : AppCompatActivity() {
                             tvPlantName.text = plantResult.name
                             tvPlantScientificName.text = plantResult.scientificName
                         }
+
+                        val history = HistoryEntity(
+                            image = imagePlant,
+                            userId = uid,
+                            date = date,
+                            plantName = plantResult.name,
+                            plantScientificName = plantResult.scientificName,
+                            accuracy = probability
+                        )
+
+                        Log.i(TAG, "getPlantByName: fromPage = $fromPage")
+                        if (fromPage == "CameraFragment") {
+                            viewModel.insertHistory(history)
+                        }
                     }
                     is Result.Error -> {
 
@@ -85,10 +116,16 @@ class ResultActivity() : AppCompatActivity() {
         }
     }
 
+    private fun insertHistory(history: HistoryEntity) {
+        viewModel.insertHistory(history)
+    }
+
     companion object {
         const val TAG = "ResultActivity"
         const val IMAGE_PLANT = "image_plant"
         const val PLANT_NAME = "plant_name"
         const val PROBABILITY = "probability"
+        const val DATE = "date"
+        const val FROM_PAGE = "from_page"
     }
 }

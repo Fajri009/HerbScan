@@ -30,20 +30,25 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import com.example.herbscan.R
+import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.databinding.FragmentCameraBinding
 import com.example.herbscan.databinding.PopUpInfoBinding
-import com.example.herbscan.tflite.TFLiteHelper
 import com.example.herbscan.ui.camera.result.ResultActivity
 import com.example.herbscan.utils.Utils
 import java.io.FileDescriptor
 import java.io.IOException
+import com.example.herbscan.data.network.Result
+import com.example.herbscan.databinding.PopUpLoadingBinding
 
 class CameraFragment : Fragment() {
     private lateinit var binding: FragmentCameraBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
-    private val tfLiteHelper by lazy { TFLiteHelper(requireContext()) }
+    private val viewModel by viewModels<CameraViewModel> {
+        ViewModelFactory.getInstance(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +76,7 @@ class CameraFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         startCamera()
+        binding.ivCaptureCamera.isEnabled = true
     }
 
     override fun onStop() {
@@ -151,9 +157,18 @@ class CameraFragment : Fragment() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
+        binding.ivCaptureCamera.isEnabled = false
+
         val photoFile = Utils.createCustomTempFile(requireContext())
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        val popUpBinding = PopUpLoadingBinding.inflate(layoutInflater)
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setView(popUpBinding.root)
+            .setCancelable(false)
+            .create()
+        alertDialog.show()
 
         imageCapture.takePicture(
             outputOptions,
@@ -163,13 +178,27 @@ class CameraFragment : Fragment() {
                     val savedUri = Uri.fromFile(photoFile)
                     val rotation = computeRelativeRotation()
                     val bitmap = savedUri.toBitmap()?.rotateBitmap(rotation.toFloat())
-                    val result = tfLiteHelper.classifyImage(bitmap!!)
+                    viewModel.classifyImage(bitmap!!).observe(viewLifecycleOwner) { result ->
+                        if (result != null) {
+                            when (result) {
+                                is Result.Loading -> { }
+                                is Result.Success -> {
+                                    val result = result.data
 
-                    val intent = Intent(requireContext(), ResultActivity::class.java)
-                    intent.putExtra(ResultActivity.IMAGE_PLANT, output.savedUri.toString())
-                    intent.putExtra(ResultActivity.PLANT_NAME, result.first)
-                    intent.putExtra(ResultActivity.PROBABILITY, result.second)
-                    startActivity(intent)
+                                    val intent = Intent(requireContext(), ResultActivity::class.java)
+                                    intent.putExtra(ResultActivity.IMAGE_PLANT, output.savedUri.toString())
+                                    intent.putExtra(ResultActivity.PLANT_NAME, result.first)
+                                    intent.putExtra(ResultActivity.PROBABILITY, result.second)
+                                    intent.putExtra(ResultActivity.DATE, Utils.getCurrentDate())
+                                    intent.putExtra(ResultActivity.FROM_PAGE, "CameraFragment")
+                                    alertDialog.dismiss()
+                                    startActivity(intent)
+
+                                }
+                                is Result.Error -> { }
+                            }
+                        }
+                    }
                 }
 
                 override fun onError(exc: ImageCaptureException) {

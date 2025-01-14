@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -17,10 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-//        ndk {
-//            abiFilters "armeabi-v7a", "arm64-v8a"
-//        }
     }
 
     buildTypes {
@@ -78,7 +75,7 @@ dependencies {
 
     // uCrop
     implementation(libs.ucrop)
-    implementation(libs.ucrop.v228native)
+//    implementation(libs.ucrop.v228native)
 
     // CameraX
     implementation(libs.androidx.camera.core)
@@ -93,7 +90,10 @@ dependencies {
     implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
     implementation(libs.tensorflow.lite)
-    // This dependency adds the necessary TF op support.
     implementation(libs.tensorflow.lite.select.tf.ops)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }

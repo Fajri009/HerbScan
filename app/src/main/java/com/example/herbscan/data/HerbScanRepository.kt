@@ -1,15 +1,22 @@
 package com.example.herbscan.data
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.herbscan.data.local.room.HistoryDao
+import com.example.herbscan.data.local.room.HistoryEntity
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Category
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.data.network.firebase.UserAuth
+import com.example.herbscan.tflite.TFLiteHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -18,7 +25,9 @@ import kotlin.coroutines.suspendCoroutine
 class HerbScanRepository(
     private val firebaseAuth: FirebaseAuth,
     db: FirebaseDatabase,
-    storage: FirebaseStorage
+    storage: FirebaseStorage,
+    private val tfLiteHelper: TFLiteHelper,
+    private val herbScanDao: HistoryDao
 ) {
     private val userRef = db.reference.child("users")
     private val categoryRef = db.reference.child("category")
@@ -218,6 +227,29 @@ class HerbScanRepository(
                 emit(Result.Error("Failed to add favorite plant : ${e.message}"))
             }
         }
+
+    fun classifyImage(image: Bitmap): LiveData<Result<Pair<String, String>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val result = tfLiteHelper.classifyImage(image)
+
+                emit(Result.Success(result))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to classify image : ${e.message}")
+                emit(Result.Error("Failed to classify image : ${e.message}"))
+            }
+        }
+
+    fun insertHistory(history: HistoryEntity) {
+        CoroutineScope(Dispatchers.IO).launch {
+            herbScanDao.addHistory(history)
+        }
+    }
+
+    fun getHistoryByName(userId: String, namePlant: String): LiveData<List<HistoryEntity>> =
+        herbScanDao.getHistoryByName(userId, namePlant)
 
     fun updateCurrentUser(imageUri: Uri, userMap: HashMap<String, String>): LiveData<Result<String, String>> =
         liveData {

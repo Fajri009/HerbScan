@@ -22,7 +22,7 @@ import java.util.ArrayList
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     private val viewModel by viewModels<SearchViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(this)
     }
     private lateinit var rowPlantAdapter: RowPlantAdapter
     private var plantList: ArrayList<Plant> = arrayListOf()
@@ -32,6 +32,10 @@ class SearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
 
         getPlantByName("")
         searchPlant()
@@ -61,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
                     is Result.Success -> {
                         plantList = result.data
 
-                        rowPlantAdapter = RowPlantAdapter(plantList)
+                        rowPlantAdapter = RowPlantAdapter(result.data)
                         binding.rvSearch.adapter = rowPlantAdapter
                         rowPlantAdapter.setOnItemClickCallBack(object: RowPlantAdapter.OnItemClickCallBack{
                             override fun onItemClicked(data: Plant) {

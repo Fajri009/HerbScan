@@ -1,5 +1,6 @@
 package com.example.herbscan
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.herbscan.di.Injection
@@ -7,12 +8,14 @@ import com.example.herbscan.data.HerbScanRepository
 import com.example.herbscan.ui.auth.forgotpass.ForgotPassViewModel
 import com.example.herbscan.ui.auth.login.LoginViewModel
 import com.example.herbscan.ui.auth.register.RegisterViewModel
+import com.example.herbscan.ui.camera.CameraViewModel
 import com.example.herbscan.ui.camera.result.ResultViewModel
 import com.example.herbscan.ui.home.HomeViewModel
 import com.example.herbscan.ui.profile.ProfileViewModel
 import com.example.herbscan.ui.profile.changePassword.ChangePasswordViewModel
 import com.example.herbscan.ui.profile.editProfile.EditProfileViewModel
 import com.example.herbscan.ui.home.search.SearchViewModel
+import com.example.herbscan.ui.profile.history.HistoryViewModel
 
 class ViewModelFactory private constructor(private val herbScanRepository: HerbScanRepository) :
     ViewModelProvider.NewInstanceFactory() {
@@ -34,6 +37,9 @@ class ViewModelFactory private constructor(private val herbScanRepository: HerbS
             modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                 SearchViewModel(herbScanRepository) as T
             }
+            modelClass.isAssignableFrom(CameraViewModel::class.java) -> {
+                CameraViewModel(herbScanRepository) as T
+            }
             modelClass.isAssignableFrom(ResultViewModel::class.java) -> {
                 ResultViewModel(herbScanRepository) as T
             }
@@ -46,6 +52,9 @@ class ViewModelFactory private constructor(private val herbScanRepository: HerbS
             modelClass.isAssignableFrom(ChangePasswordViewModel::class.java) -> {
                 ChangePasswordViewModel(herbScanRepository) as T
             }
+            modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
+                HistoryViewModel(herbScanRepository) as T
+            }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
@@ -55,9 +64,9 @@ class ViewModelFactory private constructor(private val herbScanRepository: HerbS
         @Volatile
         private var instance: ViewModelFactory? = null
 
-        fun getInstance(): ViewModelFactory =
+        fun getInstance(context: Context): ViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: ViewModelFactory(Injection.provideRepository())
+                instance ?: ViewModelFactory(Injection.provideRepository(context))
             }.also { instance = it }
     }
 }

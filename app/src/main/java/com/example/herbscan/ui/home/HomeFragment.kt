@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var columnPlantAdapter: ColumnPlantAdapter
     private lateinit var columnCategoryAdapter: CategoryAdapter
     private val viewModel by viewModels<HomeViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(requireContext())
     }
     private var selectedCategory: String = "Semua"
 

@@ -19,7 +19,7 @@ import com.example.herbscan.data.network.Result
 class ForgotPassActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForgotPassBinding
     private val viewModel by viewModels<ForgotPassViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

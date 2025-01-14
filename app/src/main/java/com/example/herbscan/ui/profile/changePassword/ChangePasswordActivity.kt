@@ -22,7 +22,7 @@ class ChangePasswordActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChangePasswordBinding
     private lateinit var userAuth: UserAuth
     private val viewModel by viewModels<ChangePasswordViewModel> {
-        ViewModelFactory.getInstance()
+        ViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
