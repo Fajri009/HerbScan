@@ -27,9 +27,20 @@
         android:layout_marginBottom="20dp" />
     
     <ImageView
+        android:id="@+id/iv_gallery_camera"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_gallery_camera"
+        android:contentDescription="@string/icon_gallery"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_capture_camera"
+        app:layout_constraintBottom_toBottomOf="@id/iv_capture_camera" />
+
+    <ImageView
         android:id="@+id/iv_info"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_info"
         android:contentDescription="@string/icon_info"
         app:layout_constraintEnd_toEndOf="parent"

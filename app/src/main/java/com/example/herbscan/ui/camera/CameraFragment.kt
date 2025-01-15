@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.camera2.interop.Camera2CameraInfo
@@ -49,6 +50,7 @@ class CameraFragment : Fragment() {
     private val viewModel by viewModels<CameraViewModel> {
         ViewModelFactory.getInstance(requireContext())
     }
+    private var currentImageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +65,7 @@ class CameraFragment : Fragment() {
         binding.apply {
             ivCaptureCamera.setOnClickListener { takePhoto() }
             ivInfo.setOnClickListener { showInfo() }
+            ivGalleryCamera.setOnClickListener { startGallery() }
         }
 
         return binding.root
@@ -178,27 +181,7 @@ class CameraFragment : Fragment() {
                     val savedUri = Uri.fromFile(photoFile)
                     val rotation = computeRelativeRotation()
                     val bitmap = savedUri.toBitmap()?.rotateBitmap(rotation.toFloat())
-                    viewModel.classifyImage(bitmap!!).observe(viewLifecycleOwner) { result ->
-                        if (result != null) {
-                            when (result) {
-                                is Result.Loading -> { }
-                                is Result.Success -> {
-                                    val result = result.data
-
-                                    val intent = Intent(requireContext(), ResultActivity::class.java)
-                                    intent.putExtra(ResultActivity.IMAGE_PLANT, output.savedUri.toString())
-                                    intent.putExtra(ResultActivity.PLANT_NAME, result.first)
-                                    intent.putExtra(ResultActivity.PROBABILITY, result.second)
-                                    intent.putExtra(ResultActivity.DATE, Utils.getCurrentDate())
-                                    intent.putExtra(ResultActivity.FROM_PAGE, "CameraFragment")
-                                    alertDialog.dismiss()
-                                    startActivity(intent)
-
-                                }
-                                is Result.Error -> { }
-                            }
-                        }
-                    }
+                    classifyImage(bitmap!!, alertDialog, savedUri)
                 }
 
                 override fun onError(exc: ImageCaptureException) {
@@ -211,6 +194,54 @@ class CameraFragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val bitmap = uri.toBitmap()
+
+            val popUpBinding = PopUpLoadingBinding.inflate(layoutInflater)
+            val alertDialog = AlertDialog.Builder(requireContext())
+                .setView(popUpBinding.root)
+                .setCancelable(false)
+                .create()
+            alertDialog.show()
+
+            classifyImage(bitmap!!, alertDialog, uri)
+        } else {
+            Toast.makeText(requireContext(), "No media selected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun classifyImage(image: Bitmap, alertDialog: AlertDialog, uri: Uri) {
+        viewModel.classifyImage(image).observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {}
+                    is Result.Success -> {
+                        val plant = result.data
+
+                        val intent = Intent(requireContext(), ResultActivity::class.java)
+                        intent.putExtra(ResultActivity.IMAGE_PLANT, uri.toString())
+                        intent.putExtra(ResultActivity.PLANT_NAME, plant.first)
+                        intent.putExtra(ResultActivity.PROBABILITY, plant.second)
+                        intent.putExtra(ResultActivity.DATE, Utils.getCurrentDate())
+                        intent.putExtra(ResultActivity.FROM_PAGE, "CameraFragment")
+                        alertDialog.dismiss()
+                        startActivity(intent)
+
+                    }
+
+                    is Result.Error -> {}
+                }
+            }
+        }
     }
 
     private val orientationEventListener by lazy {
