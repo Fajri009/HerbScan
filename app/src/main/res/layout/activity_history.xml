@@ -74,6 +74,6 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:paddingTop="15dp"
-            tools:listitem="@layout/item_row_plant" />
+            tools:listitem="@layout/item_history" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

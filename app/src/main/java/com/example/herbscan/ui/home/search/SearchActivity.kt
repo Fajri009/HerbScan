@@ -65,7 +65,8 @@ class SearchActivity : AppCompatActivity() {
                     is Result.Success -> {
                         plantList = result.data
 
-                        rowPlantAdapter = RowPlantAdapter(result.data)
+                        Log.i(TAG, "getFavorite: $plantList")
+                        rowPlantAdapter = RowPlantAdapter(plantList)
                         binding.rvSearch.adapter = rowPlantAdapter
                         rowPlantAdapter.setOnItemClickCallBack(object: RowPlantAdapter.OnItemClickCallBack{
                             override fun onItemClicked(data: Plant) {

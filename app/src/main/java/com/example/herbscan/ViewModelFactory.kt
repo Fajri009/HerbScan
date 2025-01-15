@@ -10,11 +10,13 @@ import com.example.herbscan.ui.auth.login.LoginViewModel
 import com.example.herbscan.ui.auth.register.RegisterViewModel
 import com.example.herbscan.ui.camera.CameraViewModel
 import com.example.herbscan.ui.camera.result.ResultViewModel
+import com.example.herbscan.ui.detail.DetailViewModel
 import com.example.herbscan.ui.home.HomeViewModel
 import com.example.herbscan.ui.profile.ProfileViewModel
 import com.example.herbscan.ui.profile.changePassword.ChangePasswordViewModel
 import com.example.herbscan.ui.profile.editProfile.EditProfileViewModel
 import com.example.herbscan.ui.home.search.SearchViewModel
+import com.example.herbscan.ui.profile.favorite.FavoriteViewModel
 import com.example.herbscan.ui.profile.history.HistoryViewModel
 
 class ViewModelFactory private constructor(private val herbScanRepository: HerbScanRepository) :
@@ -37,6 +39,9 @@ class ViewModelFactory private constructor(private val herbScanRepository: HerbS
             modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                 SearchViewModel(herbScanRepository) as T
             }
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(herbScanRepository) as T
+            }
             modelClass.isAssignableFrom(CameraViewModel::class.java) -> {
                 CameraViewModel(herbScanRepository) as T
             }
@@ -54,6 +59,9 @@ class ViewModelFactory private constructor(private val herbScanRepository: HerbS
             }
             modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
                 HistoryViewModel(herbScanRepository) as T
+            }
+            modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> {
+                FavoriteViewModel(herbScanRepository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

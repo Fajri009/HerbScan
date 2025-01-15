@@ -56,7 +56,6 @@ class ResultActivity() : AppCompatActivity() {
 
             getPlantByName(imagePlant, namePlantPure!!, userModel.uid!!, date!!, probability!!, fromPage!!)
 
-//            tvPercentage.text = "$percetage%"
             val percentageText = tvPercentage.text.toString()
             val percentageString = percentageText.replace("[^0-9]".toRegex(), "")
             val percentage = percentageString.toIntOrNull() ?: 0
@@ -114,10 +113,6 @@ class ResultActivity() : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun insertHistory(history: HistoryEntity) {
-        viewModel.insertHistory(history)
     }
 
     companion object {
