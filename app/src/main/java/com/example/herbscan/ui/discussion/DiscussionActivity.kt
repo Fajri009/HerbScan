@@ -1,8 +1,6 @@
 package com.example.herbscan.ui.discussion
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -16,7 +14,6 @@ import com.example.herbscan.databinding.ActivityDiscussionBinding
 import com.example.herbscan.utils.Utils
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.UserAuth
-import java.util.concurrent.TimeUnit
 
 class DiscussionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDiscussionBinding
@@ -26,8 +23,6 @@ class DiscussionActivity : AppCompatActivity() {
     private var user: UserAuth? = null
     private lateinit var discussionAdapter: DiscussionAdapter
     private var replyState: Boolean = false
-    private lateinit var handler: Handler
-    private lateinit var runnable: Runnable
     private var discussionId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +33,8 @@ class DiscussionActivity : AppCompatActivity() {
 
         val plantName = intent.getStringExtra(PLANT_NAME)
 
-        handler = Handler(Looper.getMainLooper())
-        runnable = Runnable {
-            getDiscussion(plantName!!)
-            getCurrentUser()
-            handler.postDelayed(runnable, TimeUnit.SECONDS.toMillis(1))
-        }
-
-        handler.post(runnable)
+        getDiscussion(plantName!!)
+        getCurrentUser()
 
         binding.apply {
             tvPlantName.setText("Diskusi ($plantName)")
@@ -75,10 +64,7 @@ class DiscussionActivity : AppCompatActivity() {
 
                         val discussion = result.data
 
-                        discussionAdapter = DiscussionAdapter(discussion) {
-                            showReplyLayout(it)
-                            discussionId = it.id
-                        }
+                        discussionAdapter = DiscussionAdapter(discussion)
                         binding.rvDiscussion.adapter = discussionAdapter
                     }
 

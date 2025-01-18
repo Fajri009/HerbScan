@@ -13,17 +13,12 @@ import com.example.herbscan.R
 import com.example.herbscan.data.network.firebase.Discussion
 import com.example.herbscan.utils.Utils.getRelativeTimeDifference
 
-class DiscussionAdapter(
-    var list: ArrayList<Discussion>,
-    private val onReplyClick: (Discussion) -> Unit
-) : RecyclerView.Adapter<DiscussionAdapter.ViewHolder>() {
-
+class DiscussionAdapter(var list: ArrayList<Discussion>) : RecyclerView.Adapter<DiscussionAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivProfilePic: ImageView = itemView.findViewById(R.id.iv_profile_pic)
         val tvName: TextView = itemView.findViewById(R.id.tv_name)
         val tvChat: TextView = itemView.findViewById(R.id.tv_chat)
         val tvTime: TextView = itemView.findViewById(R.id.tv_time)
-        val tvReply: TextView = itemView.findViewById(R.id.tv_reply)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,10 +39,6 @@ class DiscussionAdapter(
             tvName.text = discussion.name
             tvChat.text = discussion.chat
             updateTime(tvTime, discussion.time)
-
-            tvReply.setOnClickListener {
-                onReplyClick(discussion)
-            }
         }
     }
 
