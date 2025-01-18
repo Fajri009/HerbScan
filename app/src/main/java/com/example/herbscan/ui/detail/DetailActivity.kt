@@ -45,6 +45,7 @@ class DetailActivity : AppCompatActivity() {
                 .into(ivPlant)
             btnLookDiscussion.setOnClickListener {
                 val intent = Intent(this@DetailActivity, DiscussionActivity::class.java)
+                intent.putExtra(DiscussionActivity.PLANT_NAME, plantHome.name)
                 startActivity(intent)
             }
         }

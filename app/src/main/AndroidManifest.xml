@@ -24,6 +24,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.discussion.DiscussionActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".ui.detail.DetailActivity"
@@ -45,19 +46,24 @@
             android:exported="false" />
         <activity
             android:name=".ui.profile.changePassword.ChangePasswordActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" />
         <activity
             android:name=".ui.profile.editProfile.EditProfileActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" />
         <activity
             android:name=".ui.auth.forgotpass.ForgotPassActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" />
         <activity
             android:name=".ui.auth.register.RegisterActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" />
         <activity
             android:name=".ui.auth.login.LoginActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true" />
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true">

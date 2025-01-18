@@ -82,6 +82,14 @@
     <string name="benefit">Manfaat</string>
     <string name="how_to_use">Cara Penggunaan</string>
     <string name="side_effect">Efek Samping</string>
+    
+    <!-- Chat -->
+    <string name="chat">Tanaman ini apakah bisa digunakan untuk mengobat sakit kepala?</string>
+    <string name="time_1">2 jam lalu</string>
+    <string name="reply">Balas</string>
+    <string name="icon_send_message">Ikon Kirim Pesan</string>
+    <string name="hint_discussion">Tambahkan diskusi</string>
+    <string name="icon_reply">Ikon Balasan</string>
 
     <!-- Camera -->
     <string name="camera">Kamera</string>
