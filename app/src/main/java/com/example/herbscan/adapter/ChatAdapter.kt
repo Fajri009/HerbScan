@@ -10,45 +10,35 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.herbscan.R
-import com.example.herbscan.data.network.firebase.Discussion
+import com.example.herbscan.data.network.firebase.Chat
 import com.example.herbscan.utils.Utils.getRelativeTimeDifference
 
-class DiscussionAdapter(var list: ArrayList<Discussion>) : RecyclerView.Adapter<DiscussionAdapter.ViewHolder>() {
-    private var onItemClickCallBack: OnItemClickCallBack? = null
-
-    fun setOnItemClickCallBack(onItemClickCallBack: OnItemClickCallBack) {
-        this.onItemClickCallBack = onItemClickCallBack
-    }
-
+class ChatAdapter(var list: ArrayList<Chat>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivProfilePic: ImageView = itemView.findViewById(R.id.iv_profile_pic)
         val tvName: TextView = itemView.findViewById(R.id.tv_name)
-        val tvTitle: TextView = itemView.findViewById(R.id.tv_title_discussion)
-        val tvTime: TextView = itemView.findViewById(R.id.tv_last_discussion)
+        val tvChat: TextView = itemView.findViewById(R.id.tv_chat)
+        val tvTime: TextView = itemView.findViewById(R.id.tv_time)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_discussion, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent, false)
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val discussion = list[position]
+        val chat = list[position]
 
         holder.apply {
             Glide.with(itemView.context)
-                .load(discussion.profilePic)
+                .load(chat.profilePic)
                 .into(ivProfilePic)
-            tvName.text = discussion.name
-            tvTitle.text = discussion.title
-            updateTime(tvTime, discussion.time)
-
-            itemView.setOnClickListener {
-                onItemClickCallBack?.onItemClicked(list[holder.adapterPosition])
-            }
+            tvName.text = chat.name
+            tvChat.text = chat.chat
+            updateTime(tvTime, chat.time)
         }
     }
 
@@ -62,9 +52,5 @@ class DiscussionAdapter(var list: ArrayList<Discussion>) : RecyclerView.Adapter<
             }
         }
         handler.post(runnable)
-    }
-
-    interface OnItemClickCallBack {
-        fun onItemClicked(data: Discussion)
     }
 }

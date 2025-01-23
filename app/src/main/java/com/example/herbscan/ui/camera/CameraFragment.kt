@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
+import com.example.herbscan.data.local.room.HistoryEntity
 import com.example.herbscan.databinding.FragmentCameraBinding
 import com.example.herbscan.databinding.PopUpInfoBinding
 import com.example.herbscan.ui.camera.result.ResultActivity
@@ -50,7 +51,6 @@ class CameraFragment : Fragment() {
     private val viewModel by viewModels<CameraViewModel> {
         ViewModelFactory.getInstance(requireContext())
     }
-    private var currentImageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -227,11 +227,19 @@ class CameraFragment : Fragment() {
                     is Result.Success -> {
                         val plant = result.data
 
+                        val plantResult = HistoryEntity(
+                            image = uri.toString(),
+                            date = Utils.getCurrentDate(),
+                            plantName = plant.first,
+                            accuracy = plant.second,
+                            userId = "",
+                            plantScientificName = ""
+                        )
+
+                        Log.i(TAG, "classifyImage: $plantResult")
+
                         val intent = Intent(requireContext(), ResultActivity::class.java)
-                        intent.putExtra(ResultActivity.IMAGE_PLANT, uri.toString())
-                        intent.putExtra(ResultActivity.PLANT_NAME, plant.first)
-                        intent.putExtra(ResultActivity.PROBABILITY, plant.second)
-                        intent.putExtra(ResultActivity.DATE, Utils.getCurrentDate())
+                        intent.putExtra(ResultActivity.EXTRA_PLANT, plantResult)
                         intent.putExtra(ResultActivity.FROM_PAGE, "CameraFragment")
                         alertDialog.dismiss()
                         startActivity(intent)

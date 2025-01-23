@@ -13,7 +13,4 @@ class DiscussionViewModel(private var herbScanRepository: HerbScanRepository): V
 
     fun addDiscussion(plantName: String, discussion: Discussion) =
         herbScanRepository.addDiscussion(plantName, discussion)
-
-    fun addReply(plantName: String, discussionId: String, reply: Discussion) =
-        herbScanRepository.addReply(plantName, discussionId, reply)
 }

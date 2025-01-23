@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bottom_sheet_background"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tv_confirm_delete"
+        style="@style/TextAppearance.AppCompat.TextLg.Semibold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    
+    <LinearLayout
+        android:id="@+id/btn_yes"
+        android:layout_width="156dp"
+        android:layout_height="48dp"
+        android:background="@drawable/custom_yes_button"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_confirm_delete"
+        app:layout_constraintEnd_toEndOf="parent">
+        
+        <TextView
+            style="@style/TextAppearance.AppCompat.TextSm.Semibold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/yes"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/shades_50" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_no"
+        android:layout_width="156dp"
+        android:layout_height="48dp"
+        android:background="@drawable/custom_no_button"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_yes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.TextSm.Semibold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/primary_700" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,7 +24,7 @@ class DetailActivity : AppCompatActivity() {
     private val viewModel by viewModels<DetailViewModel>() {
         ViewModelFactory.getInstance(this)
     }
-
+    private lateinit var plantHome: Plant
     private var buttonState: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,13 +33,13 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val plantHome = intent.getParcelableExtra<Plant>(EXTRA_PLANT)
+        plantHome = intent.getParcelableExtra<Plant>(EXTRA_PLANT)!!
 
         binding.apply {
             ivBack.setOnClickListener {
                 finish()
             }
-            tvPlantName.text = plantHome!!.name
+            tvPlantName.text = plantHome.name
             Glide.with(this@DetailActivity)
                 .load(plantHome.picture)
                 .into(ivPlant)
@@ -51,7 +51,13 @@ class DetailActivity : AppCompatActivity() {
         }
 
         setViewPager()
-        checkFavoritePlant(plantHome!!)
+        checkFavoritePlant(plantHome)
+        getManyDiscussion(plantHome.name)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getManyDiscussion(plantHome.name)
     }
 
     private fun setViewPager() {
@@ -61,6 +67,35 @@ class DetailActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, positon ->
             tab.text = resources.getString(TAB_TITLES[positon])
         }.attach()
+    }
+
+    private fun getManyDiscussion(plantName: String) {
+        viewModel.getManyDiscussion(plantName).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.apply {
+                            progressBar.visibility = View.VISIBLE
+                        }
+                    }
+                    is Result.Success -> {
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+                            if (result.data == 0) {
+                                tvDiscussion.text = getString(R.string.no_discussion)
+                            } else {
+                                tvDiscussion.text = getString(R.string.many_discussion, result.data)
+                            }
+                        }
+                    }
+                    is Result.Error -> {
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun addFavoritePlant(plant: Plant) {

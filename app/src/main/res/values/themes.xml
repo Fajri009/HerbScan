@@ -307,4 +307,10 @@
         <item name="cornerSize">20dp</item>
         <item name="color">@color/shades_50</item>
     </style>
+
+    <style name="backgroundFab">
+        <item name="tint">@color/primary_900</item>
+        <item name="android:background">@color/primary_50</item>
+        <item name="android:backgroundTint">@color/primary_50</item>
+    </style>
 </resources>

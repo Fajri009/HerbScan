@@ -36,25 +36,23 @@ class ResultActivity() : AppCompatActivity() {
         userPreference = UserPreference(this)
         userModel = userPreference.getUser()
 
-        val imagePlant = intent.getStringExtra(IMAGE_PLANT)
-        val probability = intent.getStringExtra(PROBABILITY)
-        val namePlant = intent.getStringExtra(PLANT_NAME)
-        val namePlantPure = namePlant?.substringAfterLast("(")?.removeSuffix(")")?.trim()
-        val date = intent.getStringExtra(DATE)
+        val plantHistory = intent.getParcelableExtra<HistoryEntity>(EXTRA_PLANT)
+        Log.i(TAG, "onCreate: $plantHistory")
+        val namePlantPure = plantHistory!!.plantName.substringAfterLast("(").removeSuffix(")").trim()
         val fromPage = intent.getStringExtra(FROM_PAGE)
         Log.i(TAG, "classifyImage: namePlant = $namePlantPure")
 
         binding.apply {
             ivBack.setOnClickListener { finish() }
-            ivPlant.setImageURI(imagePlant!!.toUri())
-            tvPercentage.text = probability
+            ivPlant.setImageURI(plantHistory.image.toUri())
+            tvPercentage.text = plantHistory.accuracy
             layoutGoToDetail.setOnClickListener {
                 val intent = Intent(this@ResultActivity, DetailActivity::class.java)
                 intent.putExtra(DetailActivity.EXTRA_PLANT, plantResult)
                 startActivity(intent)
             }
 
-            getPlantByName(imagePlant, namePlantPure!!, userModel.uid!!, date!!, probability!!, fromPage!!)
+            getPlantByName(plantHistory.image, namePlantPure, userModel.uid!!, plantHistory.date, plantHistory.accuracy, fromPage!!)
 
             val percentageText = tvPercentage.text.toString()
             val percentageString = percentageText.replace("[^0-9]".toRegex(), "")
@@ -79,7 +77,7 @@ class ResultActivity() : AppCompatActivity() {
         probability: String,
         fromPage: String
     ) {
-        viewModel.getIPlantByName(namePlant).observe(this) { result ->
+        viewModel.getPlantByName(namePlant).observe(this) { result ->
             if (result != null) {
                 when (result) {
                     is Result.Loading -> {
@@ -117,10 +115,7 @@ class ResultActivity() : AppCompatActivity() {
 
     companion object {
         const val TAG = "ResultActivity"
-        const val IMAGE_PLANT = "image_plant"
-        const val PLANT_NAME = "plant_name"
-        const val PROBABILITY = "probability"
-        const val DATE = "date"
+        const val EXTRA_PLANT = "extra_plant"
         const val FROM_PAGE = "from_page"
     }
 }

@@ -1,9 +1,12 @@
 package com.example.herbscan.data.local.room
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "history")
 data class HistoryEntity(
     @PrimaryKey(autoGenerate = true)
@@ -27,5 +30,4 @@ data class HistoryEntity(
 
     @ColumnInfo(name = "accuracy")
     var accuracy: String,
-
-)
+): Parcelable

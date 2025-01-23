@@ -70,9 +70,6 @@ class ProfileFragment : Fragment() {
                 val intent = Intent(requireContext(), FavoriteActivity::class.java)
                 startActivity(intent)
             }
-            btnLanguage.setOnClickListener {
-
-            }
             btnLogout.setOnClickListener {
                 logout()
             }

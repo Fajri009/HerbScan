@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="15dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile_pic"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:src="@drawable/profile_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextAppearance.AppCompat.TextXxs.Semibold"
+            android:layout_width="wrap_content"
+            android:text="@string/user_fullname"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/neutral_500"
+            app:layout_constraintStart_toEndOf="@+id/iv_profile_pic"
+            app:layout_constraintTop_toTopOf="@id/iv_profile_pic"
+            app:layout_constraintBottom_toBottomOf="@id/iv_profile_pic" />
+
+        <TextView
+            android:id="@+id/tv_title_discussion"
+            style="@style/TextAppearance.AppCompat.TextSm.Semibold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/discussion"
+            android:textColor="@color/shades_100"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_profile_pic" />
+
+        <TextView
+            android:id="@+id/tv_last_discussion"
+            style="@style/TextAppearance.AppCompat.TextXxs.Semibold"
+            android:layout_width="wrap_content"
+            android:text="@string/last_discussion"
+            android:textColor="@color/secondary_900"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_discussion" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

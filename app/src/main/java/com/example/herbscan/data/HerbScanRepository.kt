@@ -8,6 +8,7 @@ import com.example.herbscan.data.local.room.HistoryDao
 import com.example.herbscan.data.local.room.HistoryEntity
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Category
+import com.example.herbscan.data.network.firebase.Chat
 import com.example.herbscan.data.network.firebase.Discussion
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.data.network.firebase.UserAuth
@@ -314,6 +315,35 @@ class HerbScanRepository(
             }
         }
 
+    fun getManyDiscussion(plantName: String): LiveData<Result<Int, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+                var discussionCount = 0
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null) {
+                        if (plant.name.contains(plantName, ignoreCase = true)) {
+                            val discussionRef = plantData.child("discussion").ref
+                            val discussionSnapshot = discussionRef.get().await()
+
+                            discussionCount = discussionSnapshot.childrenCount.toInt()
+                            break
+                        }
+                    }
+                }
+
+                Log.i(TAG, "getManyDiscussion: $discussionCount")
+                emit(Result.Success(discussionCount))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get discussion count: ${e.message}")
+                emit(Result.Error("Failed to get discussion count: ${e.message}"))
+            }
+        }
+
     fun getDiscussion(plantName: String): LiveData<Result<ArrayList<Discussion>, String>> =
         liveData {
             emit(Result.Loading)
@@ -347,26 +377,49 @@ class HerbScanRepository(
             }
         }
 
-    fun addReply(plantName: String, discussionId: String, reply: Discussion): LiveData<Result<String, String>> =
+    fun deleteDiscussion(plantName: String, discussionId: String): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
 
             try {
                 val plantSnapshot = plantRef.get().await()
-                var replyRef: DatabaseReference? = null
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null && plant.name.contains(plantName, ignoreCase = true)) {
+                        val discussionRef = plantData.child("discussion").child(discussionId).ref
+                        discussionRef.removeValue().await()
+                        emit(Result.Success("Berhasil menghapus diskusi"))
+                    }
+                }
+
+                emit(Result.Error("Diskusi tidak ditemukan"))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to delete discussion : ${e.message}")
+                emit(Result.Error("Failed to delete discussion : ${e.message}"))
+            }
+        }
+
+    fun addChat(plantName: String, discussionId: String, chat: Chat): LiveData<Result<String, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+                var chatRef: DatabaseReference? = null
 
                 for (plantData in plantSnapshot.children) {
                     val plant = plantData.getValue(Plant::class.java)
                     if (plant != null) {
                         if (plant.name.contains(plantName, ignoreCase = true)) {
-                            replyRef = plantData.child("discussion").child(discussionId).child("reply").ref.push()
+                            chatRef = plantData.child("discussion").child(discussionId).child("chat").ref.push()
                             break
                         }
                     }
                 }
 
-                if (replyRef != null) {
-                    replyRef.setValue(reply).await()
+                if (chatRef != null) {
+                    chatRef.setValue(chat).await()
                     emit(Result.Success("Berhasil menambahkan balasan"))
                 } else {
                     emit(Result.Error("Diskusi tidak ditemukan"))
@@ -374,6 +427,39 @@ class HerbScanRepository(
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to add reply : ${e.message}")
                 emit(Result.Error("Failed to add reply : ${e.message}"))
+            }
+        }
+
+    fun getChat(plantName: String, discussionId: String): LiveData<Result<ArrayList<Chat>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+                val chatList = ArrayList<Chat>()
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null) {
+                        if (plant.name.contains(plantName, ignoreCase = true)) {
+                            val chatRef = plantData.child("discussion").child(discussionId).child("chat").ref
+                            val chatSnapshot = chatRef.get().await()
+
+                            for (chatData in chatSnapshot.children) {
+                                val chat = chatData.getValue(Chat::class.java)
+                                if (chat != null) {
+                                    chatList.add(chat)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Log.i(TAG, "getChat: $chatList")
+                emit(Result.Success(chatList))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get chat : ${e.message}")
+                emit(Result.Error("Failed to get chat : ${e.message}"))
             }
         }
 

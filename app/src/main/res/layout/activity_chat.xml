@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/shades_50"
-    tools:context=".ui.discussion.DiscussionActivity">
+    tools:context=".ui.chat.ChatActivity">
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
@@ -35,7 +35,7 @@
             android:contentDescription="@string/cloud_background"
             android:scaleType="centerCrop"
             android:src="@drawable/detail_background"
-            app:layout_constraintBottom_toBottomOf="@id/tv_plant_name"
+            app:layout_constraintBottom_toBottomOf="@id/tvDiscussion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,17 +54,33 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_plant_name"
+            android:id="@+id/tvDiscussion"
             style="@style/TextAppearance.AppCompat.TextXl.Semibold"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/discussion_plant"
+            android:text="@string/discussion"
+            android:textAlignment="center"
             android:paddingBottom="20dp"
             android:textColor="@color/shades_50"
             android:layout_marginTop="45dp"
+            android:layout_marginHorizontal="70dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        
+        <ImageView
+            android:id="@+id/iv_remove"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_remove"
+            android:contentDescription="@string/icon_remove"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,7 +94,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/et_user_input_message">
 
         <ImageView
             android:layout_width="250dp"
@@ -97,23 +113,45 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/rv_discussion"
-        tools:listitem="@layout/item_discussion"
+        android:id="@+id/rv_chat"
+        tools:listitem="@layout/item_chat"
         android:paddingHorizontal="10dp"
         android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/et_user_input_message" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_discussion"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/et_user_input_message"
+        style="@style/TextAppearance.AppCompat.TextSm.Regular"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        style="@style/backgroundFab"
-        android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:minHeight="40dp"
+        android:background="@drawable/outlined_edit_text"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:paddingHorizontal="15dp"
+        android:hint="@string/hint_discussion"
+        android:maxLines="4"
+        android:inputType="text|textMultiLine"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_send_message"
+        app:layout_constraintBottom_toBottomOf="@id/iv_send_message"
+        app:layout_constraintEnd_toStartOf="@id/iv_send_message"
+        android:autofillHints="" />
+
+    <ImageView
+        android:id="@+id/iv_send_message"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_send"
+        android:contentDescription="@string/icon_send_message"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_discussion" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

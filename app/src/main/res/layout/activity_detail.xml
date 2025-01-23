@@ -101,6 +101,15 @@
         app:layout_constraintTop_toBottomOf="@id/iv_plant"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/divider"
+        android:src="@drawable/divider"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
     
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
@@ -146,9 +155,10 @@
                 android:textColor="@color/shades_100" />
 
             <TextView
+                android:id="@+id/tv_discussion"
                 style="@style/TextAppearance.AppCompat.TextXxs.Medium"
                 android:layout_width="wrap_content"
-                android:text="@string/last_discussion"
+                android:text="@string/no_discussion"
                 android:textColor="@color/secondary_900" />
         </LinearLayout>
 

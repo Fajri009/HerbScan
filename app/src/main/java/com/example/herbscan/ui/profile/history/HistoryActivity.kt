@@ -53,10 +53,7 @@ class HistoryActivity : AppCompatActivity() {
             historyAdapter.setOnItemClickCallBack(object: HistoryAdapter.OnItemClickCallBack {
                 override fun onItemClicked(data: HistoryEntity) {
                     val intent = Intent(this@HistoryActivity, ResultActivity::class.java)
-                    intent.putExtra(ResultActivity.IMAGE_PLANT, data.image)
-                    intent.putExtra(ResultActivity.PLANT_NAME, data.plantName)
-                    intent.putExtra(ResultActivity.PROBABILITY, data.accuracy)
-                    intent.putExtra(ResultActivity.DATE, data.date)
+                    intent.putExtra(ResultActivity.EXTRA_PLANT, data)
                     intent.putExtra(ResultActivity.FROM_PAGE, "HistoryActivity")
                     startActivity(intent)
                 }

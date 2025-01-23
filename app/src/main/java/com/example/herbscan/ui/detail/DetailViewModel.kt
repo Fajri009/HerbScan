@@ -13,4 +13,7 @@ class DetailViewModel(private val repository: HerbScanRepository): ViewModel() {
 
     fun checkFavoritePlant(plantName: String) =
         repository.getFavoritePlant(plantName)
+
+    fun getManyDiscussion(plantName: String) =
+        repository.getManyDiscussion(plantName)
 }

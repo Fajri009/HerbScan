@@ -1,12 +1,15 @@
 package com.example.herbscan.ui.discussion
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.adapter.DiscussionAdapter
 import com.example.herbscan.data.network.firebase.Discussion
@@ -14,6 +17,8 @@ import com.example.herbscan.databinding.ActivityDiscussionBinding
 import com.example.herbscan.utils.Utils
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.UserAuth
+import com.example.herbscan.databinding.PopUpDiscussionBinding
+import com.example.herbscan.ui.chat.ChatActivity
 
 class DiscussionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDiscussionBinding
@@ -22,8 +27,7 @@ class DiscussionActivity : AppCompatActivity() {
     }
     private var user: UserAuth? = null
     private lateinit var discussionAdapter: DiscussionAdapter
-    private var replyState: Boolean = false
-    private var discussionId: String = ""
+    private var plantName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,24 +35,22 @@ class DiscussionActivity : AppCompatActivity() {
         binding = ActivityDiscussionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val plantName = intent.getStringExtra(PLANT_NAME)
+        plantName = intent.getStringExtra(PLANT_NAME)!!
 
-        getDiscussion(plantName!!)
+        getDiscussion(plantName)
         getCurrentUser()
 
         binding.apply {
-            tvPlantName.setText("Diskusi ($plantName)")
+            tvPlantName.text = getString(R.string.discussion_plant, plantName)
             ivBack.setOnClickListener { finish() }
             rvDiscussion.layoutManager = LinearLayoutManager(this@DiscussionActivity)
-            ivSendMessage.setOnClickListener {
-                if (!replyState) {
-                    sendMessage(plantName!!)
-                } else {
-                    addReply(plantName!!, discussionId)
-                }
-            }
-            layoutReply.setOnClickListener { hideReplyLayout() }
+            fabAddDiscussion.setOnClickListener { showPopUp() }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getDiscussion(plantName)
     }
 
     private fun getDiscussion(plantName: String) {
@@ -60,12 +62,30 @@ class DiscussionActivity : AppCompatActivity() {
                     }
 
                     is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-
                         val discussion = result.data
+                        Log.i(TAG, "getDiscussion: $discussion")
 
-                        discussionAdapter = DiscussionAdapter(discussion)
-                        binding.rvDiscussion.adapter = discussionAdapter
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+
+                            if (discussion.isEmpty()) {
+                                layoutEmpty.visibility = View.VISIBLE
+                                rvDiscussion.visibility = View.GONE
+                            } else {
+                                layoutEmpty.visibility = View.GONE
+                                rvDiscussion.visibility = View.VISIBLE
+                                discussionAdapter = DiscussionAdapter(discussion)
+                                binding.rvDiscussion.adapter = discussionAdapter
+                                discussionAdapter.setOnItemClickCallBack(object: DiscussionAdapter.OnItemClickCallBack {
+                                    override fun onItemClicked(data: Discussion) {
+                                        val intent = Intent(this@DiscussionActivity, ChatActivity::class.java)
+                                        intent.putExtra(ChatActivity.EXTRA_DISCUSSION, data)
+                                        intent.putExtra(ChatActivity.PLANT_NAME, plantName)
+                                        startActivity(intent)
+                                    }
+                                })
+                            }
+                        }
                     }
 
                     is Result.Error -> {
@@ -74,17 +94,6 @@ class DiscussionActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun showReplyLayout(discussion: Discussion) {
-        binding.layoutReply.visibility = View.VISIBLE
-        binding.tvReply.text = discussion.chat
-        replyState = true
-    }
-
-    private fun hideReplyLayout() {
-        binding.layoutReply.visibility = View.GONE
-        replyState = false
     }
 
     private fun getCurrentUser() {
@@ -108,39 +117,56 @@ class DiscussionActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendMessage(plantName: String) {
-        val userInput = binding.etUserInputMessage.text.toString()
+    private fun showPopUp() {
+        val popupBinding = PopUpDiscussionBinding.inflate(layoutInflater)
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(popupBinding.root)
+            .setCancelable(false)
+            .create()
+
+        alertDialog.show()
+
+        popupBinding.apply {
+            btnSubmit.setOnClickListener {
+                val input = popupBinding.etTitleDiscussion.text.toString()
+                addDiscussion(plantName, input)
+                getDiscussion(plantName)
+                alertDialog.dismiss()
+            }
+            ivClose.setOnClickListener { alertDialog.dismiss() }
+        }
+    }
+
+    private fun addDiscussion(plantName: String, input: String) {
         val fullName = user!!.firstName + " " + user!!.lastName
 
-        if (userInput.isNotEmpty()) {
+        if (input.isNotEmpty()) {
             Log.i(TAG, "sendMessage: @${user!!.id}")
-            val userMessage = Discussion(
+            val discussion = Discussion(
                 "",
                 user!!.id!!,
                 user!!.profilePic!!,
                 fullName,
-                userInput,
+                input,
                 Utils.getCurrentDate()
             )
 
-            viewModel.addDiscussion(plantName, userMessage).observe(this) { result ->
+            viewModel.addDiscussion(plantName, discussion).observe(this) { result ->
                 if (result != null) {
                     when (result) {
                         is Result.Loading -> {
                             binding.apply {
                                 progressBar.visibility = View.VISIBLE
-                                ivSendMessage.isEnabled = false
                             }
                         }
                         is Result.Success -> {
                             binding.apply {
                                 progressBar.visibility = View.GONE
-                                etUserInputMessage.setText("")
-                                ivSendMessage.isEnabled = true
                             }
 
                             discussionAdapter.apply {
-                                list.add(userMessage)
+                                list.add(discussion)
                                 notifyItemInserted(list.size - 1)
                                 binding.rvDiscussion.scrollToPosition(list.size - 1)
                             }
@@ -148,52 +174,6 @@ class DiscussionActivity : AppCompatActivity() {
                         is Result.Error -> {
                             binding.apply {
                                 progressBar.visibility = View.GONE
-                                ivSendMessage.isEnabled = true
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun addReply(plantName: String, discussionId: String) {
-        Log.i(TAG, "addReply: $discussionId")
-        val userInput = binding.etUserInputMessage.text.toString()
-        val fullName = user!!.firstName + " " + user!!.lastName
-
-        if (userInput.isNotEmpty()) {
-            val reply = Discussion(
-                "",
-                user!!.id!!,
-                user!!.profilePic!!,
-                fullName,
-                userInput,
-                Utils.getCurrentDate(),
-            )
-
-            viewModel.addReply(plantName, discussionId, reply).observe(this) { result ->
-                if (result != null) {
-                    when (result) {
-                        is Result.Loading -> {
-                            binding.apply {
-                                progressBar.visibility = View.VISIBLE
-                                ivSendMessage.isEnabled = false
-                            }
-                        }
-                        is Result.Success -> {
-                            binding.apply {
-                                progressBar.visibility = View.GONE
-                                etUserInputMessage.setText("")
-                                ivSendMessage.isEnabled = true
-                                layoutReply.visibility = View.GONE
-                                replyState = false
-                            }
-                        }
-                        is Result.Error -> {
-                            binding.apply {
-                                progressBar.visibility = View.GONE
-                                ivSendMessage.isEnabled = true
                             }
                         }
                     }

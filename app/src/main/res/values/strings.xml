@@ -19,6 +19,8 @@
     <string name="plant_availability">Ketersediaan</string>
     <string name="recommendation_for">Rekomendasi untuk %1$s</string>
     <string name="loading">Loading...</string>
+    <string name="illlust_empty">Ilustrasi tidak ada data</string>
+    <string name="empty">Tidak ada data</string>
 
     <!-- Login -->
     <string name="login">Masuk</string>
@@ -71,25 +73,35 @@
     <string name="detail_background">Latar Belakang Detail</string>
     <string name="icon_fav">Ikon Favorit</string>
     <string name="icon_unfav">Ikon Tidak Favorit</string>
-    <string name="discussion">Diskusi</string>
-    <string name="look_discussion">Lihat Diskusi</string>
-    <string name="last_discussion">Terakhir 1 jam yang lalu</string>
     <string name="availability">Ketersediaan</string>
     <string name="habitat">Habitat</string>
+    <string name="last_discussion">Terakhir 1 jam lalu</string>
     <string name="plant_habitat">Habitat Tanaman</string>
     <string name="biodata">Biodata</string>
     <string name="description">Deskripsi</string>
     <string name="benefit">Manfaat</string>
     <string name="how_to_use">Cara Penggunaan</string>
     <string name="side_effect">Efek Samping</string>
-    
-    <!-- Chat -->
+    <string name="discussion">Diskusi</string>
+
+    <!-- Discussion -->
+    <string name="discussion_plant">Diskusi (%1$s)</string>
+    <string name="title_discussion">Judul Diskusi</string>
     <string name="chat">Tanaman ini apakah bisa digunakan untuk mengobat sakit kepala?</string>
-    <string name="time_1">2 jam lalu</string>
-    <string name="reply">Balas</string>
-    <string name="icon_send_message">Ikon Kirim Pesan</string>
     <string name="hint_discussion">Tambahkan diskusi</string>
     <string name="icon_reply">Ikon Balasan</string>
+    <string name="look_discussion">Lihat Diskusi</string>
+    <string name="no_discussion">Tidak ada diskusi</string>
+    <string name="many_discussion">Terdapat %1$d diskusi</string>
+
+    <!-- Chat -->
+    <string name="add_discussion">Tambahkan Diskusi</string>
+    <string name="icon_remove">Ikon Hapus</string>
+    <string name="confirm_delete">Apakah Anda yakin ingin\n menghapus diskusi ini?</string>
+    <string name="icon_send_message">Ikon Kirim Pesan</string>
+    <string name="time_1">2 jam lalu</string>
+    <string name="yes">Iya</string>
+    <string name="no">Tidak</string>
 
     <!-- Camera -->
     <string name="camera">Kamera</string>
