@@ -11,6 +11,6 @@ interface HistoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addHistory(history: HistoryEntity)
 
-    @Query("SELECT * FROM history WHERE LOWER(plantName) LIKE LOWER('%' || :namePlant || '%') AND userId = :userId ORDER BY date DESC")
+    @Query("SELECT * FROM history WHERE LOWER(plantName) LIKE LOWER('%' || :namePlant || '%') AND userId = :userId ORDER BY timeStamp DESC")
     fun getHistoryByName(userId: String, namePlant: String): LiveData<List<HistoryEntity>>
 }

@@ -19,8 +19,8 @@ data class HistoryEntity(
     @ColumnInfo(name = "userId")
     val userId: String,
 
-    @ColumnInfo(name = "date")
-    var date: String,
+    @ColumnInfo(name = "timeStamp")
+    var timeStamp: String,
 
     @ColumnInfo(name = "plantName")
     var plantName: String,
@@ -28,6 +28,6 @@ data class HistoryEntity(
     @ColumnInfo(name = "plantScientificName")
     var plantScientificName: String,
 
-    @ColumnInfo(name = "accuracy")
-    var accuracy: String,
+    @ColumnInfo(name = "probability")
+    var probability: String,
 ): Parcelable

@@ -1,6 +1,7 @@
 package com.example.herbscan.ui.detail.tab
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +22,9 @@ class DescriptionFragment : Fragment() {
         val plant = requireActivity().intent.getParcelableExtra<Plant>(EXTRA_PLANT)
 
         binding.apply {
-            tvPlantBenefit.text = plant!!.description.benefit.replace("\\\\n", "\n")
-            tvPlantHowToUse.text = plant.description.howToUse.replace("\\\\n", "\n")
-            tvSideEffect.text = plant.description.sideEffect.replace("\\\\n", "\n")
+            tvPlantBenefit.text = formatWithBullets(plant!!.description.benefit)
+            tvPlantHowToUse.text= formatWithBullets(plant.description.howToUse)
+            tvSideEffect.text = formatWithBullets(plant.description.sideEffect)
 
             if (plant.recommendation.isBlank()) {
                 layoutRecommend.visibility = View.GONE
@@ -37,6 +38,19 @@ class DescriptionFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun formatWithBullets(text: String): CharSequence {
+        val bulletPoints = text.split("\\\\n").filter { it.isNotBlank() }
+        val formattedText = SpannableStringBuilder()
+
+        for (point in bulletPoints) {
+            formattedText.append("\u2022 ") // Bullet character
+            formattedText.append(point)
+            formattedText.append("\n")
+        }
+
+        return formattedText
     }
 
     companion object {

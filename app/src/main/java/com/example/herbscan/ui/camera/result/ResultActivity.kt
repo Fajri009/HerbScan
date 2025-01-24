@@ -45,14 +45,14 @@ class ResultActivity() : AppCompatActivity() {
         binding.apply {
             ivBack.setOnClickListener { finish() }
             ivPlant.setImageURI(plantHistory.image.toUri())
-            tvPercentage.text = plantHistory.accuracy
+            tvPercentage.text = plantHistory.probability
             layoutGoToDetail.setOnClickListener {
                 val intent = Intent(this@ResultActivity, DetailActivity::class.java)
                 intent.putExtra(DetailActivity.EXTRA_PLANT, plantResult)
                 startActivity(intent)
             }
 
-            getPlantByName(plantHistory.image, namePlantPure, userModel.uid!!, plantHistory.date, plantHistory.accuracy, fromPage!!)
+            getPlantByName(plantHistory.image, namePlantPure, userModel.uid!!, plantHistory.timeStamp, plantHistory.probability, fromPage!!)
 
             val percentageText = tvPercentage.text.toString()
             val percentageString = percentageText.replace("[^0-9]".toRegex(), "")
@@ -94,10 +94,10 @@ class ResultActivity() : AppCompatActivity() {
                         val history = HistoryEntity(
                             image = imagePlant,
                             userId = uid,
-                            date = date,
+                            timeStamp = date,
                             plantName = plantResult.name,
                             plantScientificName = plantResult.scientificName,
-                            accuracy = probability
+                            probability = probability
                         )
 
                         Log.i(TAG, "getPlantByName: fromPage = $fromPage")

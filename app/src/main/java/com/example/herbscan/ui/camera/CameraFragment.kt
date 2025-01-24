@@ -229,9 +229,9 @@ class CameraFragment : Fragment() {
 
                         val plantResult = HistoryEntity(
                             image = uri.toString(),
-                            date = Utils.getCurrentDate(),
+                            timeStamp = Utils.getCurrentDate(),
                             plantName = plant.first,
-                            accuracy = plant.second,
+                            probability = plant.second,
                             userId = "",
                             plantScientificName = ""
                         )

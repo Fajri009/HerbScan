@@ -35,6 +35,8 @@ class TFLiteHelper(private val context: Context) {
     }
 
     fun classifyImage(bitmap: Bitmap): Pair<String, String> {
+        val startTime = System.currentTimeMillis() // Catat waktu mulai
+
         val imageTensorIndex = 0
         val imageShape = interpreter.getInputTensor(imageTensorIndex).shape()
         val imageDataType: DataType = interpreter.getInputTensor(imageTensorIndex).dataType()
@@ -67,6 +69,9 @@ class TFLiteHelper(private val context: Context) {
             it.value == maxValueInMap
         }
         Log.i(TAG, "classifyImage: ${found?.key.orEmpty()}")
+
+        val inferenceTime = System.currentTimeMillis() - startTime
+        Log.d(TAG, "Inference time: $inferenceTime ms")
 
         val probabilityPercentage = (maxValueInMap * 10).toInt()
         return found?.key.orEmpty() to "$probabilityPercentage%"

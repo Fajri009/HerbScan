@@ -34,8 +34,8 @@ class HistoryAdapter(private var list: List<HistoryEntity>) : RecyclerView.Adapt
         holder.apply {
             tvPlantName.text = list[position].plantName
             tvPlantScientificName.text = list[position].plantScientificName
-            tvDate.text = list[position].date
-            tvAccuracy.text = list[position].accuracy
+            tvDate.text = list[position].timeStamp
+            tvAccuracy.text = list[position].probability
 
             val percentageText = tvAccuracy.text.toString()
             val percentageString = percentageText.replace("[^0-9]".toRegex(), "")
