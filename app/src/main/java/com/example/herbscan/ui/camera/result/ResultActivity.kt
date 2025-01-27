@@ -6,9 +6,7 @@ import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.data.local.preference.user.User
 import com.example.herbscan.data.local.preference.user.UserPreference
@@ -45,7 +43,6 @@ class ResultActivity() : AppCompatActivity() {
         binding.apply {
             ivBack.setOnClickListener { finish() }
             ivPlant.setImageURI(plantHistory.image.toUri())
-            tvPercentage.text = plantHistory.probability
             layoutGoToDetail.setOnClickListener {
                 val intent = Intent(this@ResultActivity, DetailActivity::class.java)
                 intent.putExtra(DetailActivity.EXTRA_PLANT, plantResult)
@@ -53,19 +50,6 @@ class ResultActivity() : AppCompatActivity() {
             }
 
             getPlantByName(plantHistory.image, namePlantPure, userModel.uid!!, plantHistory.timeStamp, plantHistory.probability, fromPage!!)
-
-            val percentageText = tvPercentage.text.toString()
-            val percentageString = percentageText.replace("[^0-9]".toRegex(), "")
-            val percentage = percentageString.toIntOrNull() ?: 0
-
-            if (percentage >= 75) {
-                if (percentage >= 100) {
-                    tvPercentage.setText(R.string.one_hundred_percent)
-                }
-                tvPercentage.setTextColor(ContextCompat.getColor(this@ResultActivity, R.color.success_50))
-            } else {
-                tvPercentage.setTextColor(ContextCompat.getColor(this@ResultActivity, R.color.error_500))
-            }
         }
     }
 
