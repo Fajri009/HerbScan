@@ -50,6 +50,12 @@ class RowPlantAdapter(private var list: ArrayList<Plant>) : RecyclerView.Adapter
                 tvRecommend.text = itemView.context.getString(R.string.recommendation_for, list[position].recommendation)
             }
 
+            if (list[position].availability == "Umum") {
+                tvAvailability.setTextColor(itemView.context.getColor(R.color.success_900))
+            } else {
+                tvAvailability.setTextColor(itemView.context.getColor(R.color.error_700))
+            }
+
             itemView.setOnClickListener {
                 onItemClickCallback?.onItemClicked(list[holder.adapterPosition]) ?: Log.i(TAG, "onItemClickCallback is null")
             }

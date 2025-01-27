@@ -26,6 +26,7 @@ class ColumnPlantAdapter(private var list: ArrayList<Plant>) : RecyclerView.Adap
         val tvPopularity: TextView = itemView.findViewById(R.id.tv_availability)
         val layoutRecommend: LinearLayout = itemView.findViewById(R.id.layout_recommend)
         val tvRecommend: TextView = itemView.findViewById(R.id.tv_recommend)
+        val tvAvailability: TextView = itemView.findViewById(R.id.tv_availability)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,6 +57,12 @@ class ColumnPlantAdapter(private var list: ArrayList<Plant>) : RecyclerView.Adap
                 layoutRecommend.visibility = View.GONE
             } else {
                 tvRecommend.text = itemView.context.getString(R.string.recommendation_for, list[position].recommendation)
+            }
+
+            if (list[position].availability == "Umum") {
+                tvAvailability.setTextColor(itemView.context.getColor(R.color.success_900))
+            } else {
+                tvAvailability.setTextColor(itemView.context.getColor(R.color.error_700))
             }
 
             itemView.setOnClickListener {

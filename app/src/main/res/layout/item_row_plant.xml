@@ -85,7 +85,7 @@
             style="@style/TextAppearance.AppCompat.TextXxs.Regular"
             android:layout_width="0dp"
             android:text="@string/plant_availability"
-            android:textColor="@color/success_900"
+            android:textColor="@color/shades_100"
             android:gravity="end"
             android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -27,6 +27,8 @@ class BiodataFragment : Fragment() {
 
             if (plant.availability == "Umum") {
                 tvAvailability.setTextColor(resources.getColor(R.color.success_900))
+            } else {
+                tvAvailability.setTextColor(resources.getColor(R.color.error_700))
             }
         }
 
