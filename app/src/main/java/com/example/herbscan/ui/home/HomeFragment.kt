@@ -194,7 +194,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        val daunList = plantList.filter { it.home.part == "daun" }
+        val daunList = plantList.filter { it.home.part.contains("daun", ignoreCase = true) }
         val daunPlantAdapter = ColumnPlantAdapter(ArrayList(daunList))
         binding.rvItem2.adapter = daunPlantAdapter
         daunPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
@@ -204,7 +204,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        val buahList = plantList.filter { it.home.part == "buah" }
+        val buahList = plantList.filter { it.home.part.contains("buah", ignoreCase = true) }
         val buahPlantAdapter = ColumnPlantAdapter(ArrayList(buahList))
         binding.rvItem3.adapter = buahPlantAdapter
         buahPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
@@ -214,7 +214,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        val akarList = plantList.filter { it.home.part == "akar" }
+        val akarList = plantList.filter { it.home.part.contains("akar", ignoreCase = true) }
         val akarPlantAdapter = ColumnPlantAdapter(ArrayList(akarList))
         binding.rvItem4.adapter = akarPlantAdapter
         akarPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
