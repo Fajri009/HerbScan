@@ -111,6 +111,7 @@
     <string name="detail_info_camera">Kami akan memberikan\ninformasi mengenai detail\ndari tanaman tersebut</string>
 
     <!-- Result -->
+    <string name="result">Hasil</string>
     <string name="percentage">90%</string>
     <string name="accuracy">Akurasi</string>
     <string name="arrow_detail">Arah panah detail</string>

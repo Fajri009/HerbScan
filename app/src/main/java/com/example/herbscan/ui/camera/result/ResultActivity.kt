@@ -3,10 +3,14 @@ package com.example.herbscan.ui.camera.result
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
+import androidx.core.view.updateLayoutParams
+import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.data.local.preference.user.User
 import com.example.herbscan.data.local.preference.user.UserPreference
@@ -73,6 +77,15 @@ class ResultActivity() : AppCompatActivity() {
                         binding.apply {
                             tvPlantName.text = plantResult.name
                             tvPlantScientificName.text = plantResult.scientificName
+                            if (plantResult.recommendation.isBlank()) {
+                                layoutRecommend.visibility = View.GONE
+                            } else {
+                                tvPlantName.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                                    topMargin = resources.getDimensionPixelSize(R.dimen.margin_10dp)
+                                }
+                                tvRecommend.visibility = View.VISIBLE
+                                tvRecommend.text = getString(R.string.recommendation_for, plantResult.recommendation)
+                            }
                         }
 
                         val history = HistoryEntity(
