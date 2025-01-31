@@ -78,16 +78,25 @@ class FavoriteActivity : AppCompatActivity() {
                     }
 
                     is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        favoriteList = result.data
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+                            favoriteList = result.data
 
-                        favoriteAdapter = RowPlantAdapter(favoriteList)
-                        binding.rvFavorite.adapter = favoriteAdapter
-                        favoriteAdapter.setOnItemClickCallBack(object: RowPlantAdapter.OnItemClickCallBack {
-                            override fun onItemClicked(data: Plant) {
-                                showSelectedPlant(data)
+                            if (favoriteList.isEmpty()) {
+                                layoutEmpty.visibility = View.VISIBLE
+                                rvFavorite.visibility = View.GONE
+                            } else {
+                                layoutEmpty.visibility = View.GONE
+                                rvFavorite.visibility = View.VISIBLE
+                                favoriteAdapter = RowPlantAdapter(favoriteList)
+                                rvFavorite.adapter = favoriteAdapter
+                                favoriteAdapter.setOnItemClickCallBack(object: RowPlantAdapter.OnItemClickCallBack {
+                                    override fun onItemClicked(data: Plant) {
+                                        showSelectedPlant(data)
+                                    }
+                                })
                             }
-                        })
+                        }
                     }
 
                     is Result.Error -> {

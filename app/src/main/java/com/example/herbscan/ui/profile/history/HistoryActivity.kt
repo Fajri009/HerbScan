@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -48,16 +49,25 @@ class HistoryActivity : AppCompatActivity() {
 
     private fun getHistory(uid: String, query: String) {
         viewModel.getHistoryByName(uid, query).observe(this) { result ->
-            historyAdapter = HistoryAdapter(result.toList())
-            binding.rvHistory.adapter = historyAdapter
-            historyAdapter.setOnItemClickCallBack(object: HistoryAdapter.OnItemClickCallBack {
-                override fun onItemClicked(data: HistoryEntity) {
-                    val intent = Intent(this@HistoryActivity, ResultActivity::class.java)
-                    intent.putExtra(ResultActivity.EXTRA_PLANT, data)
-                    intent.putExtra(ResultActivity.FROM_PAGE, "HistoryActivity")
-                    startActivity(intent)
+            binding.apply {
+                if (result.isEmpty()) {
+                    layoutEmpty.visibility = View.VISIBLE
+                    rvHistory.visibility = View.GONE
+                } else {
+                    layoutEmpty.visibility = View.GONE
+                    rvHistory.visibility = View.VISIBLE
+                    historyAdapter = HistoryAdapter(result.toList())
+                    binding.rvHistory.adapter = historyAdapter
+                    historyAdapter.setOnItemClickCallBack(object: HistoryAdapter.OnItemClickCallBack {
+                        override fun onItemClicked(data: HistoryEntity) {
+                            val intent = Intent(this@HistoryActivity, ResultActivity::class.java)
+                            intent.putExtra(ResultActivity.EXTRA_PLANT, data)
+                            intent.putExtra(ResultActivity.FROM_PAGE, "HistoryActivity")
+                            startActivity(intent)
+                        }
+                    })
                 }
-            })
+            }
         }
     }
 

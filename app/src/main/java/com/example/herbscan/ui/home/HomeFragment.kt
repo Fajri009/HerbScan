@@ -57,21 +57,7 @@ class HomeFragment : Fragment() {
         showListCategory()
         showListPlant()
 
-        viewModel.getImagePlant().observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
-                }
-            }
-        }
+        getPlantImage("daun ungu")
 
         return binding.root
     }
@@ -95,6 +81,24 @@ class HomeFragment : Fragment() {
                                 append(user.lastName)
                             }
                         }
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    fun getPlantImage(plantName: String) {
+        viewModel.getImagePlant(plantName).observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
@@ -185,44 +189,67 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateRecyclerViews(plantList: ArrayList<Plant>) {
-        columnPlantAdapter = ColumnPlantAdapter(plantList)
-        binding.rvItem1.adapter = columnPlantAdapter
-        columnPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
-            override fun onItemClicked(data: Plant) {
-                Log.i(TAG, "onItemClicked: $data")
-                showSelectedPlant(data)
-            }
-        })
+        binding.apply {
+            columnPlantAdapter = ColumnPlantAdapter(plantList)
+            rvItem1.adapter = columnPlantAdapter
+            columnPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
+                override fun onItemClicked(data: Plant) {
+                    Log.i(TAG, "onItemClicked: $data")
+                    showSelectedPlant(data)
+                }
+            })
 
-        val daunList = plantList.filter { it.home.part.contains("daun", ignoreCase = true) }
-        val daunPlantAdapter = ColumnPlantAdapter(ArrayList(daunList))
-        binding.rvItem2.adapter = daunPlantAdapter
-        daunPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
-            override fun onItemClicked(data: Plant) {
-                Log.i(TAG, "onItemClicked: $data")
-                showSelectedPlant(data)
+            val daunList = plantList.filter { it.home.part.contains("daun", ignoreCase = true) }
+            if (daunList.isEmpty()) {
+                tvLeaf.visibility = View.GONE
+                rvItem2.visibility = View.GONE
+            } else {
+                tvLeaf.visibility = View.VISIBLE
+                rvItem2.visibility = View.VISIBLE
+                val daunPlantAdapter = ColumnPlantAdapter(ArrayList(daunList))
+                rvItem2.adapter = daunPlantAdapter
+                daunPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
+                    override fun onItemClicked(data: Plant) {
+                        Log.i(TAG, "onItemClicked: $data")
+                        showSelectedPlant(data)
+                    }
+                })
             }
-        })
 
-        val buahList = plantList.filter { it.home.part.contains("buah", ignoreCase = true) }
-        val buahPlantAdapter = ColumnPlantAdapter(ArrayList(buahList))
-        binding.rvItem3.adapter = buahPlantAdapter
-        buahPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
-            override fun onItemClicked(data: Plant) {
-                Log.i(TAG, "onItemClicked: $data")
-                showSelectedPlant(data)
+            val buahList = plantList.filter { it.home.part.contains("buah", ignoreCase = true) }
+            if (buahList.isEmpty()) {
+                tvFruit.visibility = View.GONE
+                rvItem3.visibility = View.GONE
+            } else {
+                tvFruit.visibility = View.VISIBLE
+                rvItem3.visibility = View.VISIBLE
+                val buahPlantAdapter = ColumnPlantAdapter(ArrayList(buahList))
+                rvItem3.adapter = buahPlantAdapter
+                buahPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
+                    override fun onItemClicked(data: Plant) {
+                        Log.i(TAG, "onItemClicked: $data")
+                        showSelectedPlant(data)
+                    }
+                })
             }
-        })
 
-        val akarList = plantList.filter { it.home.part.contains("akar", ignoreCase = true) }
-        val akarPlantAdapter = ColumnPlantAdapter(ArrayList(akarList))
-        binding.rvItem4.adapter = akarPlantAdapter
-        akarPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
-            override fun onItemClicked(data: Plant) {
-                Log.i(TAG, "onItemClicked: $data")
-                showSelectedPlant(data)
+            val akarList = plantList.filter { it.home.part.contains("akar", ignoreCase = true) }
+            if (akarList.isEmpty()) {
+                tvRoot.visibility = View.GONE
+                rvItem4.visibility = View.GONE
+            } else {
+                tvRoot.visibility = View.VISIBLE
+                rvItem4.visibility = View.VISIBLE
+                val akarPlantAdapter = ColumnPlantAdapter(ArrayList(akarList))
+                rvItem4.adapter = akarPlantAdapter
+                akarPlantAdapter.setOnItemClickCallBack(object: ColumnPlantAdapter.OnItemClickCallBack {
+                    override fun onItemClicked(data: Plant) {
+                        Log.i(TAG, "onItemClicked: $data")
+                        showSelectedPlant(data)
+                    }
+                })
             }
-        })
+        }
     }
 
     private fun showSelectedPlant(data: Plant) {

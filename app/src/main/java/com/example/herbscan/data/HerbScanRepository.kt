@@ -192,16 +192,26 @@ class HerbScanRepository(
             }
         }
 
-    fun getImagePlant(): LiveData<Result<String, String>> =
+    fun getImagePlant(plantName: String): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
 
             try {
-                val imagePlant = storageRef.child("plant/nangka mini.jpg")
-
+                val imagePlant = storageRef.child("plant/$plantName.jpg")
                 val downloadUrl = imagePlant.downloadUrl.await()
 
-                Log.i(TAG, "classifyImage: $downloadUrl")
+                val plantSnapshot = plantRef.get().await()
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null && plant.name.contains(plantName, ignoreCase = true)) {
+                        val updatePlant = plant.copy(picture = downloadUrl.toString())
+                        plantData.ref.setValue(updatePlant).await()
+                        emit(Result.Success("Berhasil memperbarui gambar tanaman"))
+                    }
+                }
+
+                Log.i(TAG, "classifyImage ($plantName): $downloadUrl")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get image plant : ${e.message}")
                 emit(Result.Error("Failed to get image plant : ${e.message}"))

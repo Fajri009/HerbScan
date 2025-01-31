@@ -67,6 +67,7 @@
     <string name="fruit">Buah</string>
     <string name="root">Akar</string>
     <string name="search">Pencarian</string>
+    <string name="no_found">Tidak ditemukan</string>
 
     <!-- Detail -->
     <string name="detail">Detail</string>

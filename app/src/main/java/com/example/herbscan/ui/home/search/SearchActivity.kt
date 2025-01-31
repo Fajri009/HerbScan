@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -65,14 +66,22 @@ class SearchActivity : AppCompatActivity() {
                     is Result.Success -> {
                         plantList = result.data
 
-                        Log.i(TAG, "getFavorite: $plantList")
-                        rowPlantAdapter = RowPlantAdapter(plantList)
-                        binding.rvSearch.adapter = rowPlantAdapter
-                        rowPlantAdapter.setOnItemClickCallBack(object: RowPlantAdapter.OnItemClickCallBack{
-                            override fun onItemClicked(data: Plant) {
-                                showSelectedPlant(data)
+                        binding.apply {
+                            if (plantList.isEmpty()) {
+                                layoutEmpty.visibility = View.VISIBLE
+                                rvSearch.visibility = View.GONE
+                            } else {
+                                layoutEmpty.visibility = View.GONE
+                                rvSearch.visibility = View.VISIBLE
+                                rowPlantAdapter = RowPlantAdapter(plantList)
+                                binding.rvSearch.adapter = rowPlantAdapter
+                                rowPlantAdapter.setOnItemClickCallBack(object: RowPlantAdapter.OnItemClickCallBack{
+                                    override fun onItemClicked(data: Plant) {
+                                        showSelectedPlant(data)
+                                    }
+                                })
                             }
-                        } )
+                        }
                     }
 
                     is Result.Error -> {}
