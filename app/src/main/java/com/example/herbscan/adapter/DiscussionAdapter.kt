@@ -2,6 +2,7 @@ package com.example.herbscan.adapter
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class DiscussionAdapter(var list: ArrayList<Discussion>) : RecyclerView.Adapter<
                 .into(ivProfilePic)
             tvName.text = discussion.name
             tvTitle.text = discussion.title
+            Log.i("tester", "onBindViewHolder: ${discussion.time}")
             updateTime(tvTime, discussion.time)
 
             itemView.setOnClickListener {
@@ -57,7 +59,7 @@ class DiscussionAdapter(var list: ArrayList<Discussion>) : RecyclerView.Adapter<
         val runnable = object : Runnable {
             override fun run() {
                 val relativeTime = getRelativeTimeDifference(timestamp)
-                tvTime.text = relativeTime
+                tvTime.text = "Dibuat $relativeTime"
                 handler.postDelayed(this, 1000)
             }
         }

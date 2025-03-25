@@ -4,22 +4,19 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.herbscan.data.local.room.HistoryDao
-import com.example.herbscan.data.local.room.HistoryEntity
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Category
 import com.example.herbscan.data.network.firebase.Chat
 import com.example.herbscan.data.network.firebase.Discussion
+import com.example.herbscan.data.network.firebase.History
 import com.example.herbscan.data.network.firebase.Plant
+import com.example.herbscan.data.network.firebase.PredictionResult
 import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.tflite.TFLiteHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -30,11 +27,12 @@ class HerbScanRepository(
     db: FirebaseDatabase,
     storage: FirebaseStorage,
     private val tfLiteHelper: TFLiteHelper,
-    private val herbScanDao: HistoryDao
 ) {
     private val userRef = db.reference.child("users")
     private val categoryRef = db.reference.child("category")
     private val plantRef = db.reference.child("plant")
+    private val predictionRef = db.reference.child("prediction")
+    private val historyRef = db.reference.child("history")
     private val storageRef = storage.reference
 
     fun register(
@@ -56,7 +54,7 @@ class HerbScanRepository(
                     val avatarRef = storageRef.child("avatar/pic_avatar.png")
 
                     val downloadUrl = avatarRef.downloadUrl.await()
-                    userMap["profilePic"] = downloadUrl.toString()
+                    userMap["profile_pic"] = downloadUrl.toString()
 
                     userRef.child(uid).setValue(userMap).await()
                     emit(Result.Success("Berhasil Mendaftarkan Akun"))
@@ -110,7 +108,9 @@ class HerbScanRepository(
                 if (currentUser != null) {
                     val uid = currentUser.uid
                     val userSnapshot = userRef.child(uid).get().await()
-                    val user = userSnapshot.getValue(UserAuth::class.java)
+                    Log.i(TAG, "getCurrentUser: $userSnapshot")
+                    val dataUser = userSnapshot.getValue(UserAuth::class.java)
+                    val user = dataUser?.copy(uid = uid)
                     Log.i(TAG, "get current user data: $user")
                     if (user != null) {
                         emit(Result.Success(user))
@@ -473,7 +473,7 @@ class HerbScanRepository(
             }
         }
 
-    fun classifyImage(image: Bitmap): LiveData<Result<Pair<String, String>, String>> =
+    fun classifyImage(image: Bitmap): LiveData<Result<Triple<String, String, String>, String>> =
         liveData {
             emit(Result.Loading)
 
@@ -487,14 +487,87 @@ class HerbScanRepository(
             }
         }
 
-    fun insertHistory(history: HistoryEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-            herbScanDao.addHistory(history)
-        }
-    }
+    fun addPredictionResult(result: PredictionResult, image: Uri, uid: String): LiveData<Result<PredictionResult, String>> =
+        liveData {
+            emit(Result.Loading)
 
-    fun getHistoryByName(userId: String, namePlant: String): LiveData<List<HistoryEntity>> =
-        herbScanDao.getHistoryByName(userId, namePlant)
+            try {
+                val prediction = predictionRef.push()
+                val predictionId = prediction.key!!
+
+                val imageRef = storageRef.child("prediction/$predictionId")
+                val uploadTask = imageRef.putFile(image)
+                val downloadUrl = suspendCoroutine { continuation ->
+                    uploadTask.continueWithTask { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let {
+                                continuation.resumeWithException(it)
+                            }
+                        }
+                        imageRef.downloadUrl
+                    }.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            continuation.resume(task.result)
+                        } else {
+                            task.exception?.let {
+                                continuation.resumeWithException(it)
+                            }
+                        }
+                    }
+                }
+
+                val predictionResult = result.copy(image = downloadUrl.toString())
+                prediction.setValue(predictionResult).await()
+
+                val history = historyRef.push()
+                val historyMap = History(
+                    uid = uid,
+                    prediction_id = predictionId
+                )
+                Log.i(TAG, "addPredictionResult: $historyMap")
+                history.setValue(historyMap).await()
+
+                emit(Result.Success(predictionResult))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to add prediction : ${e.message}")
+                emit(Result.Error("Failed to add prediction : ${e.message}"))
+            }
+        }
+
+    fun getHistory(userId: String, namePlant: String): LiveData<Result<ArrayList<PredictionResult>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val historySnapshot = historyRef.get().await()
+                val historyList = ArrayList<History>()
+
+                for (historyData in historySnapshot.children) {
+                    val history = historyData.getValue(History::class.java)
+                    if (history != null && history.uid == userId) {
+                        historyList.add(history)
+                    }
+                }
+                Log.i(TAG, "getAllHistory (historyList): $historyList")
+
+                val predictionSnapshot = predictionRef.get().await()
+                val predictionList = ArrayList<PredictionResult>()
+
+                for (predictionData in predictionSnapshot.children) {
+                    val predictionId = predictionData.key!!
+                    val prediction = predictionData.getValue(PredictionResult::class.java)
+                    if (prediction != null && predictionId in historyList.map { it.prediction_id } && prediction.prediction.contains(namePlant, ignoreCase = true)) {
+                        predictionList.add(prediction)
+                    }
+                }
+                Log.i(TAG, "getHistory (predictionList): $predictionList")
+
+                emit(Result.Success(predictionList))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get history : ${e.message}")
+                emit(Result.Error("Failed to get history : ${e.message}"))
+            }
+        }
 
     fun updateCurrentUser(imageUri: Uri, userMap: HashMap<String, String>): LiveData<Result<String, String>> =
         liveData {
@@ -529,7 +602,7 @@ class HerbScanRepository(
                         }
                     }
 
-                    userMap["profilePic"] = downloadUrl.toString()
+                    userMap["profile_pic"] = downloadUrl.toString()
                     Log.i(TAG, "updateCurrentUser: $userMap")
 
                     userRef.child(uid).setValue(userMap).await()

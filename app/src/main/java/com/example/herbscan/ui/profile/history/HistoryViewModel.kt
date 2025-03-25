@@ -4,6 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.example.herbscan.data.HerbScanRepository
 
 class HistoryViewModel(private val repository: HerbScanRepository): ViewModel() {
-    fun getHistoryByName(userId: String, namePlant: String) =
-        repository.getHistoryByName(userId, namePlant)
+    fun getHistory(userId: String, namePlant: String) =
+        repository.getHistory(userId, namePlant)
 }

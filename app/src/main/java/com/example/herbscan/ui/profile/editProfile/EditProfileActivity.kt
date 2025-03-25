@@ -44,7 +44,7 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(0, 0, 0, systemBars.bottom)
             insets
         }
 
@@ -55,11 +55,11 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
             ivEditProfile.setOnClickListener { showBottomSheet() }
             Glide
                 .with(this@EditProfileActivity)
-                .load(userAuth.profilePic)
+                .load(userAuth.profile_pic)
                 .into(ivProfilePicture)
-            etFirstName.setText(userAuth.firstName)
-            etLastName.setText(userAuth.lastName)
-            etPhoneNumber.setText(userAuth.phoneNumber)
+            etFirstName.setText(userAuth.first_name)
+            etLastName.setText(userAuth.last_name)
+            etPhoneNumber.setText(userAuth.phone_number)
             etEmail.setText(userAuth.email)
             btnSave.setOnClickListener { saveChanges() }
         }
@@ -95,10 +95,10 @@ class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
         val etEmail = binding.etEmail.text.toString()
 
         val user = hashMapOf(
-            "firstName" to etFirstName,
-            "lastName" to etLastName,
+            "first_name" to etFirstName,
+            "last_name" to etLastName,
             "email" to etEmail,
-            "phoneNumber" to etPhoneNumber
+            "phone_number" to etPhoneNumber
         )
 
         viewModel.updateCurrentUser(profilePic!!, user).observe(this) { result ->

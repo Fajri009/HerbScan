@@ -34,7 +34,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
-import com.example.herbscan.data.local.room.HistoryEntity
 import com.example.herbscan.databinding.FragmentCameraBinding
 import com.example.herbscan.databinding.PopUpInfoBinding
 import com.example.herbscan.ui.camera.result.ResultActivity
@@ -42,6 +41,8 @@ import com.example.herbscan.utils.Utils
 import java.io.FileDescriptor
 import java.io.IOException
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.data.network.firebase.PredictionResult
+import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.databinding.PopUpLoadingBinding
 
 class CameraFragment : Fragment() {
@@ -51,6 +52,7 @@ class CameraFragment : Fragment() {
     private val viewModel by viewModels<CameraViewModel> {
         ViewModelFactory.getInstance(requireContext())
     }
+    private var user: UserAuth? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +63,8 @@ class CameraFragment : Fragment() {
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
+
+        getCurrentUser()
 
         binding.apply {
             ivCaptureCamera.setOnClickListener { takePhoto() }
@@ -134,6 +138,21 @@ class CameraFragment : Fragment() {
                 Log.e(TAG, "startCamera: ${exc.message}")
             }
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun getCurrentUser() {
+        viewModel.getCurrentUser().observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {}
+                    is Result.Success -> {
+                        user = result.data
+                        Log.i(TAG, "getCurrentUser: $user")
+                    }
+                    is Result.Error -> {}
+                }
+            }
+        }
     }
 
     private fun showInfo() {
@@ -227,25 +246,37 @@ class CameraFragment : Fragment() {
                     is Result.Success -> {
                         val plant = result.data
 
-                        val plantResult = HistoryEntity(
+                        val predictionResult = PredictionResult(
+                            time = Utils.getCurrentDate(),
                             image = uri.toString(),
-                            timeStamp = Utils.getCurrentDate(),
-                            plantName = plant.first,
+                            prediction = plant.first,
                             probability = plant.second,
-                            userId = "",
-                            plantScientificName = ""
+                            inference_time = plant.third
                         )
 
-                        Log.i(TAG, "classifyImage: $plantResult")
-
-                        val intent = Intent(requireContext(), ResultActivity::class.java)
-                        intent.putExtra(ResultActivity.EXTRA_PLANT, plantResult)
-                        intent.putExtra(ResultActivity.FROM_PAGE, "CameraFragment")
-                        alertDialog.dismiss()
-                        startActivity(intent)
-
+                        addPredictionResult(predictionResult, user!!.uid!!, uri, alertDialog)
                     }
 
+                    is Result.Error -> {}
+                }
+            }
+        }
+    }
+
+    private fun addPredictionResult(predictionResult: PredictionResult, uid: String, image: Uri, alertDialog: AlertDialog) {
+        viewModel.addPredictionResult(predictionResult, image, uid).observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {}
+                    is Result.Success -> {
+                        val prediction = result.data
+
+                        val intent = Intent(requireContext(), ResultActivity::class.java)
+                        intent.putExtra(ResultActivity.EXTRA_PLANT, prediction)
+                        Log.i(TAG, "addPredictionResult: $prediction")
+                        alertDialog.dismiss()
+                        startActivity(intent)
+                    }
                     is Result.Error -> {}
                 }
             }

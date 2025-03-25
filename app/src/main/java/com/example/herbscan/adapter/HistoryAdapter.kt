@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.herbscan.R
-import com.example.herbscan.data.local.room.HistoryEntity
+import com.example.herbscan.data.network.firebase.PredictionResult
 
-class HistoryAdapter(private var list: List<HistoryEntity>) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+class HistoryAdapter(private var list: List<PredictionResult>) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
     private var onItemClickCallBack: OnItemClickCallBack? = null
 
     fun setOnItemClickCallBack(onItemClickCallBack: OnItemClickCallBack) {
@@ -30,9 +30,12 @@ class HistoryAdapter(private var list: List<HistoryEntity>) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.apply {
-            tvPlantName.text = list[position].plantName
-            tvPlantScientificName.text = list[position].plantScientificName
-            tvDate.text = list[position].timeStamp
+            val namePlantPure = list[position].prediction.substringAfterLast("(").removeSuffix(")").trim()
+            val scientificName = list[position].prediction.substringBeforeLast("(").trim()
+
+            tvPlantName.text = namePlantPure
+            tvPlantScientificName.text = scientificName
+            tvDate.text = list[position].time
 
             itemView.setOnClickListener {
                 onItemClickCallBack!!.onItemClicked(list[holder.adapterPosition])
@@ -41,6 +44,6 @@ class HistoryAdapter(private var list: List<HistoryEntity>) : RecyclerView.Adapt
     }
 
     interface OnItemClickCallBack {
-        fun onItemClicked(data: HistoryEntity)
+        fun onItemClicked(data: PredictionResult)
     }
 }

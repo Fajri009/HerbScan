@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
         showListCategory()
         showListPlant()
 
-        getPlantImage("daun ungu")
+        getPlantImage("miana")
 
         return binding.root
     }
@@ -76,9 +76,9 @@ class HomeFragment : Fragment() {
 
                         binding.apply {
                             tvUserName.text = buildString {
-                                append(user.firstName)
+                                append(user.first_name)
                                 append(" ")
-                                append(user.lastName)
+                                append(user.last_name)
                             }
                         }
                     }

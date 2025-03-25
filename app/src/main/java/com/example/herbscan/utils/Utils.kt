@@ -1,6 +1,7 @@
 package com.example.herbscan.utils
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import java.io.File
 import java.text.ParseException
@@ -30,11 +31,15 @@ object Utils {
     }
 
     fun getRelativeTimeDifference(time: String): String {
-        val formatter = SimpleDateFormat("dd MMMM yyyy (HH:mm)", Locale.getDefault())
+        val formatter = SimpleDateFormat("dd MMMM yyyy (HH:mm)", Locale("id", "ID"))
         formatter.timeZone = TimeZone.getDefault()
 
         return try {
-            val chatDate = formatter.parse(time)!!
+            val timeInIndonesian = convertMonthToIndonesian(time)
+            val chatDate = formatter.parse(timeInIndonesian)
+
+            Log.i("Utils", "getRelativeTimeDifference: $chatDate")
+
             val now = Calendar.getInstance().time
             val diff = now.time - chatDate.time // Selisih dalam milidetik
 
@@ -50,7 +55,23 @@ object Utils {
                 else -> "Baru saja"
             }
         } catch (e: ParseException) {
+            Log.e("Utils", "Error parsing time: $time", e)
             "Waktu tidak valid"
         }
     }
+
+    fun convertMonthToIndonesian(dateStr: String): String {
+        val monthMap = mapOf(
+            "January" to "Januari", "February" to "Februari", "March" to "Maret", "April" to "April",
+            "May" to "Mei", "June" to "Juni", "July" to "Juli", "August" to "Agustus",
+            "September" to "September", "October" to "Oktober", "November" to "November", "December" to "Desember"
+        )
+
+        var result = dateStr
+        for ((eng, ind) in monthMap) {
+            result = result.replace(eng, ind)
+        }
+        return result
+    }
+
 }

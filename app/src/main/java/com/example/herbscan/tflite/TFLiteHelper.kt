@@ -8,17 +8,15 @@ import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
 import org.tensorflow.lite.support.common.TensorOperator
-import org.tensorflow.lite.support.common.TensorProcessor
 import org.tensorflow.lite.support.common.ops.NormalizeOp
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
-import org.tensorflow.lite.support.label.TensorLabel
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
+import kotlin.math.exp
 import java.io.FileInputStream
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import java.util.Collections
 
 class TFLiteHelper(private val context: Context) {
     private lateinit var interpreter: Interpreter
@@ -34,47 +32,50 @@ class TFLiteHelper(private val context: Context) {
         }
     }
 
-    fun classifyImage(bitmap: Bitmap): Pair<String, String> {
+    fun softmax(logits: FloatArray): FloatArray {
+        val expValues = logits.map { exp(it) }
+        val sumExp = expValues.sum()
+        return expValues.map { it / sumExp }.toFloatArray()
+    }
+
+    fun classifyImage(bitmap: Bitmap): Triple<String, String, String> {
         val startTime = System.currentTimeMillis() // Catat waktu mulai
 
         val imageTensorIndex = 0
         val imageShape = interpreter.getInputTensor(imageTensorIndex).shape()
         val imageDataType: DataType = interpreter.getInputTensor(imageTensorIndex).dataType()
 
-        val probabilityTensorIndex = 0
-        val probabilityShape = interpreter.getOutputTensor(probabilityTensorIndex).shape()
-        val probabilityDataType: DataType = interpreter.getOutputTensor(probabilityTensorIndex).dataType()
-
         val inputImageBuffer = TensorImage(imageDataType)
             .loadImage(imageShape, bitmap)
-        val outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType)
-        val probabilityProcessor = TensorProcessor.Builder().build()
-        interpreter.run(inputImageBuffer!!.buffer, outputProbabilityBuffer.buffer.rewind())
+        val outputBuffer = TensorBuffer.createFixedSize(interpreter.getOutputTensor(0).shape(), interpreter.getOutputTensor(0).dataType())
+        interpreter.run(inputImageBuffer!!.buffer, outputBuffer.buffer.rewind())
 
         val labels = try {
             FileUtil.loadLabels(context, LABEL_PATH)
         } catch (e: Exception) {
             e.printStackTrace()
-            return Pair("", "0f")
+            return Triple("", "", "0f")
         }
 
-        val labelProbability = labels.let {
-            TensorLabel(it, probabilityProcessor!!.process(outputProbabilityBuffer))
-                .mapWithFloatValue
+        var outputArray = outputBuffer.floatArray
+
+        outputArray = softmax(outputArray)
+
+        for (i in outputArray.indices) {
+            Log.d(TAG, "Label: ${labels[i]} - Probability: ${outputArray[i]}")
         }
 
-        val maxValueInMap: Float = Collections.max(labelProbability.values)
-
-        val found = labelProbability.entries.find {
-            it.value == maxValueInMap
-        }
-        Log.i(TAG, "classifyImage: ${found?.key.orEmpty()}")
+        val maxIndex = outputArray.indices.maxByOrNull { outputArray[it] } ?: -1
+        val foundLabel = if (maxIndex >= 0) labels[maxIndex] else ""
+        val confidence = if (maxIndex >= 0) outputArray[maxIndex] else 0.0f
 
         val inferenceTime = System.currentTimeMillis() - startTime
+        val inferenceTimeSeconds = inferenceTime / 1000.0
         Log.d(TAG, "Inference time: $inferenceTime ms")
 
-        val probabilityPercentage = (maxValueInMap * 10).toInt()
-        return found?.key.orEmpty() to "$probabilityPercentage%"
+        Log.i(TAG, "Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+
+        return Triple(foundLabel, "%.4f".format(confidence), "$inferenceTimeSeconds seconds")
     }
 
     private fun loadModelFile(activity: Activity): MappedByteBuffer {

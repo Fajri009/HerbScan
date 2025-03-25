@@ -24,24 +24,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/iv_bubble_background"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/bubble_background"
-            android:scaleType="fitXY"
-            android:src="@drawable/bubble_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
             android:id="@+id/iv_back"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:contentDescription="@string/back"
             android:src="@drawable/ic_back"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="45dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:background="@drawable/white_container"
+            android:background="@color/shades_50"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
             android:paddingTop="90dp"

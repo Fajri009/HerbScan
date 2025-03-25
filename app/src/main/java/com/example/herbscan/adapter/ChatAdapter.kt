@@ -13,7 +13,7 @@ import com.example.herbscan.R
 import com.example.herbscan.data.network.firebase.Chat
 import com.example.herbscan.utils.Utils.getRelativeTimeDifference
 
-class ChatAdapter(var list: ArrayList<Chat>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(var list: MutableList<Chat>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivProfilePic: ImageView = itemView.findViewById(R.id.iv_profile_pic)
         val tvName: TextView = itemView.findViewById(R.id.tv_name)
@@ -38,19 +38,8 @@ class ChatAdapter(var list: ArrayList<Chat>) : RecyclerView.Adapter<ChatAdapter.
                 .into(ivProfilePic)
             tvName.text = chat.name
             tvChat.text = chat.chat
-            updateTime(tvTime, chat.time)
+            val relativeTime = getRelativeTimeDifference(chat.time)
+            tvTime.text = relativeTime
         }
-    }
-
-    private fun updateTime(tvTime: TextView, timestamp: String) {
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
-            override fun run() {
-                val relativeTime = getRelativeTimeDifference(timestamp)
-                tvTime.text = relativeTime
-                handler.postDelayed(this, 1000)
-            }
-        }
-        handler.post(runnable)
     }
 }

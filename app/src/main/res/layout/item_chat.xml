@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/shades_50"
     android:paddingHorizontal="15dp"
-    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
     android:layout_marginTop="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView

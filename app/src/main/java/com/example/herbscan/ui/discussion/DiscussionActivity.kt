@@ -8,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat.*
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
@@ -34,6 +36,11 @@ class DiscussionActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityDiscussionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
 
         plantName = intent.getStringExtra(PLANT_NAME)!!
 
@@ -139,14 +146,14 @@ class DiscussionActivity : AppCompatActivity() {
     }
 
     private fun addDiscussion(plantName: String, input: String) {
-        val fullName = user!!.firstName + " " + user!!.lastName
+        val fullName = user!!.first_name + " " + user!!.last_name
 
         if (input.isNotEmpty()) {
-            Log.i(TAG, "sendMessage: @${user!!.id}")
+            Log.i(TAG, "sendMessage: @${user!!.uid}")
             val discussion = Discussion(
                 "",
-                user!!.id!!,
-                user!!.profilePic!!,
+                user!!.uid!!,
+                user!!.profile_pic!!,
                 fullName,
                 input,
                 Utils.getCurrentDate()

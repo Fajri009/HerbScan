@@ -92,12 +92,12 @@ class ProfileFragment : Fragment() {
 
                         binding.apply {
                             Glide.with(requireContext())
-                                .load(userAuth.profilePic)
+                                .load(userAuth.profile_pic)
                                 .into(ivProfilePicture)
                             tvUserName.text = buildString {
-                                append(userAuth.firstName)
+                                append(userAuth.first_name)
                                 append(" ")
-                                append(userAuth.lastName)
+                                append(userAuth.last_name)
                             }
                             tvUserEmail.text = userAuth.email
                         }
@@ -123,9 +123,10 @@ class ProfileFragment : Fragment() {
             userModel.rememberMe = false
             userPreference.setUser(userModel)
 
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
+
         }
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showToast(message: String) {

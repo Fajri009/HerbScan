@@ -14,7 +14,8 @@ import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.adapter.HistoryAdapter
 import com.example.herbscan.data.local.preference.user.User
 import com.example.herbscan.data.local.preference.user.UserPreference
-import com.example.herbscan.data.local.room.HistoryEntity
+import com.example.herbscan.data.network.Result
+import com.example.herbscan.data.network.firebase.PredictionResult
 import com.example.herbscan.databinding.ActivityHistoryBinding
 import com.example.herbscan.ui.camera.result.ResultActivity
 
@@ -47,25 +48,36 @@ class HistoryActivity : AppCompatActivity() {
         searchPlant()
     }
 
-    private fun getHistory(uid: String, query: String) {
-        viewModel.getHistoryByName(uid, query).observe(this) { result ->
-            binding.apply {
-                if (result.isEmpty()) {
-                    layoutEmpty.visibility = View.VISIBLE
-                    rvHistory.visibility = View.GONE
-                } else {
-                    layoutEmpty.visibility = View.GONE
-                    rvHistory.visibility = View.VISIBLE
-                    historyAdapter = HistoryAdapter(result.toList())
-                    binding.rvHistory.adapter = historyAdapter
-                    historyAdapter.setOnItemClickCallBack(object: HistoryAdapter.OnItemClickCallBack {
-                        override fun onItemClicked(data: HistoryEntity) {
-                            val intent = Intent(this@HistoryActivity, ResultActivity::class.java)
-                            intent.putExtra(ResultActivity.EXTRA_PLANT, data)
-                            intent.putExtra(ResultActivity.FROM_PAGE, "HistoryActivity")
-                            startActivity(intent)
+    private fun getHistory(userId: String, query: String) {
+        viewModel.getHistory(userId, query).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> { }
+                    is Result.Success -> {
+                        val historyList = result.data
+
+                        binding.apply {
+                            layoutEmpty.visibility = View.VISIBLE
+                            rvHistory.visibility = View.GONE
+
+                            if (historyList.isNotEmpty()) {
+                                layoutEmpty.visibility = View.GONE
+                                rvHistory.visibility = View.VISIBLE
+                                historyAdapter = HistoryAdapter(historyList.toList())
+                                binding.rvHistory.adapter = historyAdapter
+                                historyAdapter.setOnItemClickCallBack(object: HistoryAdapter.OnItemClickCallBack {
+                                    override fun onItemClicked(data: PredictionResult) {
+                                        val intent = Intent(this@HistoryActivity, ResultActivity::class.java)
+                                        intent.putExtra(ResultActivity.EXTRA_PLANT, data)
+                                        startActivity(intent)
+                                    }
+                                })
+                            }
                         }
-                    })
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
                 }
             }
         }

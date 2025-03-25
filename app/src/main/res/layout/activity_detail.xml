@@ -35,30 +35,18 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/green_container"
+        android:background="@color/primary_700"
+        android:paddingVertical="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_background"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:contentDescription="@string/cloud_background"
-            android:scaleType="centerCrop"
-            android:src="@drawable/detail_background"
-            app:layout_constraintBottom_toBottomOf="@id/tv_plant_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="45dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="25dp"
             android:contentDescription="@string/back"
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,13 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/plant_name"
-            android:paddingBottom="20dp"
             android:textColor="@color/shades_50"
-            android:layout_marginTop="45dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/iv_back" />
 
         <ImageView
             android:id="@+id/iv_fav"

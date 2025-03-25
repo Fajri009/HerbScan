@@ -23,16 +23,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/bubble_background"
-            android:scaleType="fitXY"
-            android:src="@drawable/bubble_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/tv_profile"
             style="@style/TextAppearance.AppCompat.DisplayXs.Semibold"
@@ -50,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:background="@drawable/white_container"
+            android:background="@color/shades_50"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
             android:paddingTop="90dp"
@@ -211,7 +201,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/custom_logout_button"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="20dp"

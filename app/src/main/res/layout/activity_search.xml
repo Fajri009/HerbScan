@@ -11,29 +11,18 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/green_container"
+        android:background="@color/primary_700"
+        android:paddingVertical="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_background"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/cloud_background"
-            android:scaleType="fitXY"
-            android:src="@drawable/cloud_background_2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="25dp"
             android:contentDescription="@string/back"
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"

@@ -29,7 +29,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(0, 0, 0, systemBars.bottom)
             insets
         }
 
@@ -54,7 +54,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (etFirstName.isEmpty() || etLastName.isEmpty() || etEmail.isEmpty() || etPhoneNumber.isEmpty() || etPassword.isEmpty()) {
             showToast(getString(R.string.empty_form))
-        } else if (!Utils.isValidEmail(etEmail) || etPassword.length < 8 || etPassword.length > 8) {
+        } else if (!Utils.isValidEmail(etEmail) || etPassword.length < 8) {
             showToast(getString(R.string.invalid_form))
         } else if (etPassword != etConfirmPassword) {
             showToast(getString(R.string.pass_not_match))
@@ -65,10 +65,10 @@ class RegisterActivity : AppCompatActivity() {
             )
 
             val user = hashMapOf(
-                "firstName" to etFirstName,
-                "lastName" to etLastName,
+                "first_name" to etFirstName,
+                "last_name" to etLastName,
                 "email" to etEmail,
-                "phoneNumber" to etPhoneNumber
+                "phone_number" to etPhoneNumber
             )
 
             viewModel.register(auth, user).observe(this) { result ->

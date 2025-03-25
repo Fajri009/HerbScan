@@ -8,7 +8,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.adapter.ChatAdapter
 import com.example.herbscan.data.network.Result
@@ -35,6 +38,11 @@ class ChatActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
 
         discussion = intent.getParcelableExtra<Discussion>(EXTRA_DISCUSSION)!!
         plantName = intent.getStringExtra(PLANT_NAME)!!
@@ -65,7 +73,7 @@ class ChatActivity : AppCompatActivity() {
                         user = result.data
                         Log.i(TAG, "getCurrentUser: $user")
 
-                        val fullName = user!!.firstName + " " + user!!.lastName
+                        val fullName = user!!.first_name + " " + user!!.last_name
 
                         if (discussion.name == fullName) {
                             binding.ivRemove.apply {
@@ -101,7 +109,7 @@ class ChatActivity : AppCompatActivity() {
                             } else {
                                 layoutEmpty.visibility = View.GONE
                                 rvChat.visibility = View.VISIBLE
-                                chatAdapter = ChatAdapter(chat)
+                                chatAdapter = ChatAdapter(chat.asReversed())
                                 rvChat.adapter = chatAdapter
                             }
                         }
@@ -131,13 +139,13 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun addChat(plantName: String, input: String) {
-        val fullName = user!!.firstName + " " + user!!.lastName
+        val fullName = user!!.first_name + " " + user!!.last_name
 
         if (input.isNotEmpty()) {
             val chat = Chat(
                 "",
-                user!!.id!!,
-                user!!.profilePic!!,
+                user!!.uid!!,
+                user!!.profile_pic!!,
                 fullName,
                 input,
                 Utils.getCurrentDate()

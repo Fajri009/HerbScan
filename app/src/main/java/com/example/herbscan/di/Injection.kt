@@ -2,7 +2,6 @@ package com.example.herbscan.di
 
 import android.content.Context
 import com.example.herbscan.data.HerbScanRepository
-import com.example.herbscan.data.local.room.HerbScanDatabase
 import com.example.herbscan.tflite.TFLiteHelper
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -15,7 +14,6 @@ object Injection {
         val firebaseDb = Firebase.database
         val firebaseStorage = FirebaseStorage.getInstance()
         val tfLiteHelper = TFLiteHelper(context)
-        val herbScanDao = HerbScanDatabase.getDatabase(context).historyDao()
-        return HerbScanRepository(firebaseAuth, firebaseDb, firebaseStorage, tfLiteHelper, herbScanDao)
+        return HerbScanRepository(firebaseAuth, firebaseDb, firebaseStorage, tfLiteHelper)
     }
 }

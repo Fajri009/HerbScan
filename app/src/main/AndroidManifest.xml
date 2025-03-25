@@ -22,14 +22,14 @@
         <activity
             android:name=".ui.chat.ChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.camera.result.ResultActivity"
             android:exported="false" />
         <activity
             android:name=".ui.discussion.DiscussionActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.detail.DetailActivity"
             android:exported="false" />
@@ -51,11 +51,11 @@
         <activity
             android:name=".ui.profile.changePassword.ChangePasswordActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.profile.editProfile.EditProfileActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.auth.forgotpass.ForgotPassActivity"
             android:exported="true"
@@ -63,11 +63,11 @@
         <activity
             android:name=".ui.auth.register.RegisterActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.auth.login.LoginActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true">
