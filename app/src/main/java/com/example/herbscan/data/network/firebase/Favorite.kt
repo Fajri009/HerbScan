@@ -5,5 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Favorite(
-    val name: String,
+    val uid: String = "",
+    val plant_id: String = "",
 ): Parcelable

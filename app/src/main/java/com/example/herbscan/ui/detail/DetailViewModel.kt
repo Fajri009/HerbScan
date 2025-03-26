@@ -2,17 +2,22 @@ package com.example.herbscan.ui.detail
 
 import androidx.lifecycle.ViewModel
 import com.example.herbscan.data.HerbScanRepository
-import com.example.herbscan.data.network.firebase.Plant
 
 class DetailViewModel(private val repository: HerbScanRepository): ViewModel() {
-    fun addFavoritePlant(plantName: Plant) =
-        repository.addFavoritePlant(plantName)
+    fun getCurrentPlant(plantName: String) =
+        repository.getCurrentPlant(plantName)
 
-    fun deleteFavoritePlant(plantName: String) =
-        repository.deleteFavoritePlant(plantName)
+    fun getCurrentUser() =
+        repository.getCurrentUser()
 
-    fun checkFavoritePlant(plantName: String) =
-        repository.getFavoritePlant(plantName)
+    fun addFavoritePlant(plantId: String) =
+        repository.addFavoritePlant(plantId)
+
+    fun deleteFavoritePlant(plantId: String) =
+        repository.deleteFavoritePlant(plantId)
+
+    fun checkFavoritePlant(plantId: String) =
+        repository.checkFavoritePlant(plantId)
 
     fun getManyDiscussion(plantName: String) =
         repository.getManyDiscussion(plantName)

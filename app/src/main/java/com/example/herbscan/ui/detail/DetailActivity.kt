@@ -58,7 +58,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         setViewPager()
-        checkFavoritePlant(plantHome)
+        getCurrentPlant(plantHome.name)
         getManyDiscussion(plantHome.name)
     }
 
@@ -74,6 +74,70 @@ class DetailActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, positon ->
             tab.text = resources.getString(TAB_TITLES[positon])
         }.attach()
+    }
+
+    private fun getCurrentPlant(plantName: String) {
+        viewModel.getCurrentPlant(plantName).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> { }
+                    is Result.Success -> {
+                        val plantId = result.data
+                        Log.i(TAG, "getCurrentPlant: $plantId")
+                        checkFavoritePlant(plantId)
+                    }
+                    is Result.Error -> { }
+                }
+            }
+        }
+    }
+
+    private fun checkFavoritePlant(plantId: String) {
+        Log.i(TAG, "checkFavoritePlant: $plantId")
+        viewModel.checkFavoritePlant(plantId).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.apply {
+                            progressBar.visibility = View.VISIBLE
+                            ivFav.isEnabled = true
+                        }
+                    }
+                    is Result.Success -> {
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+                            ivFav.isEnabled = true
+
+                            Log.i(TAG, "checkFavoritePlant: ${result.data}")
+
+                            if (result.data == "ada") {
+                                ivFav.setImageResource(R.drawable.ic_fav)
+                                buttonState = true
+                            } else {
+                                ivFav.setImageResource(R.drawable.ic_unfav)
+                                buttonState = false
+                            }
+
+                            Log.i(TAG, "checkFavoritePlant: $buttonState")
+                            binding.ivFav.setOnClickListener {
+                                if (!buttonState) {
+                                    Log.i(TAG, "checkFavoritePlant: ")
+                                    addFavoritePlant(plantId)
+                                } else {
+                                    deleteFavoritePlant(plantId)
+                                }
+                            }
+                        }
+                    }
+                    is Result.Error -> {
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+                            ivFav.isEnabled = true
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun getManyDiscussion(plantName: String) {
@@ -105,8 +169,9 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun addFavoritePlant(plant: Plant) {
-        viewModel.addFavoritePlant(plant).observe(this) { result ->
+    private fun addFavoritePlant(plantId: String) {
+        Log.i(TAG, "addFavoritePlant: $plantId")
+        viewModel.addFavoritePlant(plantId).observe(this) { result ->
             if (result != null) {
                 when (result) {
                     is Result.Loading -> {
@@ -137,8 +202,8 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun deleteFavoritePlant(plantName: String) {
-        viewModel.deleteFavoritePlant(plantName).observe(this) { result ->
+    private fun deleteFavoritePlant(plantId: String) {
+        viewModel.deleteFavoritePlant(plantId).observe(this) { result ->
             if (result != null) {
                 when (result) {
                     is Result.Loading -> {
@@ -165,50 +230,6 @@ class DetailActivity : AppCompatActivity() {
                         }
 
                         showToast(result.error)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun checkFavoritePlant(plant: Plant) {
-        viewModel.checkFavoritePlant(plant.name).observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.apply {
-                            progressBar.visibility = View.VISIBLE
-                            ivFav.isEnabled = true
-                        }
-                    }
-                    is Result.Success -> {
-                        binding.apply {
-                            progressBar.visibility = View.GONE
-                            ivFav.isEnabled = true
-
-                            if (result.data.isNotEmpty()) {
-                                ivFav.setImageResource(R.drawable.ic_fav)
-                                buttonState = true
-                            } else {
-                                ivFav.setImageResource(R.drawable.ic_unfav)
-                                buttonState = false
-                            }
-
-                            Log.i(TAG, "checkFavoritePlant: $buttonState")
-                            binding.ivFav.setOnClickListener {
-                                if (!buttonState) {
-                                    addFavoritePlant(plant)
-                                } else {
-                                    deleteFavoritePlant(plant.name)
-                                }
-                            }
-                        }
-                    }
-                    is Result.Error -> {
-                        binding.apply {
-                            progressBar.visibility = View.GONE
-                            ivFav.isEnabled = true
-                        }
                     }
                 }
             }

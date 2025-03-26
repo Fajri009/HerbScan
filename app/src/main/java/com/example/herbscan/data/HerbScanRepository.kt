@@ -8,6 +8,7 @@ import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Category
 import com.example.herbscan.data.network.firebase.Chat
 import com.example.herbscan.data.network.firebase.Discussion
+import com.example.herbscan.data.network.firebase.Favorite
 import com.example.herbscan.data.network.firebase.History
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.data.network.firebase.PredictionResult
@@ -33,6 +34,7 @@ class HerbScanRepository(
     private val plantRef = db.reference.child("plant")
     private val predictionRef = db.reference.child("prediction")
     private val historyRef = db.reference.child("history")
+    private val favoriteRef = db.reference.child("favorite")
     private val storageRef = storage.reference
 
     fun register(
@@ -218,7 +220,29 @@ class HerbScanRepository(
             }
         }
 
-    fun addFavoritePlant(plant: Plant): LiveData<Result<String, String>> =
+    fun getCurrentPlant(plantName: String): LiveData<Result<String, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null && plant.name.contains(plantName, ignoreCase = true)) {
+                        val plantId = plantData.key!!
+                        Log.i(TAG, "getCurrentPlant: $plantId")
+                        emit(Result.Success(plantId))
+                    }
+                }
+                Log.i(TAG, "getCurrentPlant (plantName): $plantName")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get current plant : ${e.message}")
+                emit(Result.Error("Failed to get current plant : ${e.message}"))
+            }
+        }
+
+    fun addFavoritePlant(plantId: String): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
 
@@ -227,12 +251,11 @@ class HerbScanRepository(
 
                 if (currentUser != null) {
                     val uid = currentUser.uid
-                    val favoriteRef = userRef.child(uid).child("favorite").child(plant.name)
+                    val favorite = favoriteRef.push()
+                    val favoriteMap = Favorite(uid, plantId)
 
-                    favoriteRef.setValue(plant).await()
+                    favorite.setValue(favoriteMap).await()
                     emit(Result.Success("Berhasil menambahkan tanaman ke favorite"))
-                } else {
-                    emit(Result.Error("Anda belum login"))
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to add favorite plant : ${e.message}")
@@ -240,39 +263,43 @@ class HerbScanRepository(
             }
         }
 
-    fun getFavoritePlant(namePlant: String): LiveData<Result<ArrayList<Plant>, String>> =
+    fun checkFavoritePlant(plantId: String): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
 
             try {
                 val currentUser = firebaseAuth.currentUser
-                val favoriteList = ArrayList<Plant>()
+                var category = ""
 
                 if (currentUser != null) {
                     val uid = currentUser.uid
-                    val favoriteRef = userRef.child(uid).child("favorite")
                     val favoriteSnapshot = favoriteRef.get().await()
 
-                    for (favorite in favoriteSnapshot.children) {
-                        val plant = favorite.getValue(Plant::class.java)
-
+                    for (favoriteData in favoriteSnapshot.children) {
+                        val favorite = favoriteData.getValue(Favorite::class.java)
+                        Log.i(TAG, "checkFavoritePlant: favorite: $favorite")
                         if (favorite != null) {
-                            if (plant!!.name.contains(namePlant, ignoreCase = true)) {
-                                favoriteList.add(plant)
+                            if (favorite.uid == uid && favorite.plant_id == plantId) {
+                                category = "ada"
+                                break
+                            } else {
+                                category = "tidak ada"
                             }
+                        } else {
+                            category = "kosong"
                         }
                     }
-
-                    Log.i(TAG, "getFavoritePlant (favoriteList): $favoriteList")
-                    emit(Result.Success(favoriteList))
                 }
+
+                Log.i(TAG, "checkFavoritePlant: $category")
+                emit(Result.Success(category))
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get favorite plant : ${e.message}")
                 emit(Result.Error("Failed to get favorite plant : ${e.message}"))
             }
         }
 
-    fun deleteFavoritePlant(plantName: String): LiveData<Result<String, String>> =
+    fun deleteFavoritePlant(plantId: String): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
 
@@ -281,14 +308,66 @@ class HerbScanRepository(
 
                 if (currentUser != null) {
                     val uid = currentUser.uid
-                    val favoriteRef = userRef.child(uid).child("favorite").child(plantName)
+                    val favoriteRef = favoriteRef.get().await()
 
-                    favoriteRef.removeValue().await()
-                    emit(Result.Success("Berhasil menghapus tanaman dari favorite"))
+                    for (favoriteData in favoriteRef.children) {
+                        val favorite = favoriteData.getValue(Favorite::class.java)
+                        if (favorite != null) {
+                            if (favorite.uid == uid && favorite.plant_id == plantId) {
+                                Log.i(TAG, "deleteFavoritePlant: $favoriteData")
+                                favoriteData.ref.removeValue().await()
+                                emit(Result.Success("Berhasil menghapus tanaman dari favorite"))
+                                break
+                            }
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to delete favorite plant : ${e.message}")
                 emit(Result.Error("Failed to delete favorite plant : ${e.message}"))
+            }
+        }
+
+    fun checkAllFavoritePlant(plantName: String): LiveData<Result<ArrayList<Plant>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val currentUser = firebaseAuth.currentUser
+                val favoriteSnapshot = favoriteRef.get().await()
+                val favoriteList = ArrayList<Favorite>()
+
+                if (currentUser != null) {
+                    val uid = currentUser.uid
+
+                    for (favoriteData in favoriteSnapshot.children) {
+                        val favoritePlant = favoriteData.getValue(Favorite::class.java)
+                        if (favoritePlant != null) {
+                            if (favoritePlant.uid == uid) {
+                                favoriteList.add(favoritePlant)
+                            }
+                        }
+                    }
+                }
+
+                Log.i(TAG, "checkAllFavoritePlant: $favoriteList")
+
+                val plantSnapshot = plantRef.get().await()
+                val plantList = ArrayList<Plant>()
+
+                for (plantData in plantSnapshot.children) {
+                    val plantId = plantData.key!!
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null && plantId in favoriteList.map { it.plant_id } && plant.name.contains(plantName, ignoreCase = true)) {
+                        plantList.add(plant)
+                    }
+                }
+                Log.i(TAG, "checkAllFavoritePlant: $plantList")
+
+                emit(Result.Success(plantList))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get favorite plant : ${e.message}")
+                emit(Result.Error("Failed to get favorite plant : ${e.message}"))
             }
         }
 
