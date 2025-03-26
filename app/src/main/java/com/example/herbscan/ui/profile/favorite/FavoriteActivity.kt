@@ -18,7 +18,7 @@ import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.databinding.ActivityFavoriteBinding
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
-import com.example.herbscan.ui.detail.tab.DescriptionFragment
+import com.example.herbscan.ui.detail.description.DescriptionFragment
 
 class FavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFavoriteBinding

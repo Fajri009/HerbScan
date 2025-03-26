@@ -21,7 +21,7 @@ import com.example.herbscan.data.network.firebase.Category
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
-import com.example.herbscan.ui.detail.tab.DescriptionFragment
+import com.example.herbscan.ui.detail.description.DescriptionFragment
 import com.example.herbscan.ui.home.search.SearchActivity
 import java.util.ArrayList
 

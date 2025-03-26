@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Category
 import com.example.herbscan.data.network.firebase.Chat
+import com.example.herbscan.data.network.firebase.Description
 import com.example.herbscan.data.network.firebase.Discussion
 import com.example.herbscan.data.network.firebase.Favorite
 import com.example.herbscan.data.network.firebase.History
@@ -32,6 +33,7 @@ class HerbScanRepository(
     private val userRef = db.reference.child("users")
     private val categoryRef = db.reference.child("category")
     private val plantRef = db.reference.child("plant")
+    private val descriptionRef = db.reference.child("description")
     private val predictionRef = db.reference.child("prediction")
     private val historyRef = db.reference.child("history")
     private val favoriteRef = db.reference.child("favorite")
@@ -368,6 +370,24 @@ class HerbScanRepository(
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get favorite plant : ${e.message}")
                 emit(Result.Error("Failed to get favorite plant : ${e.message}"))
+            }
+        }
+
+    fun getDescription(plantId: String): LiveData<Result<ArrayList<Description>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val description = ArrayList<Description>()
+                val descriptionRef = descriptionRef.child(plantId).get().await()
+                val descriptionData = descriptionRef.getValue(Description::class.java)
+                
+                description.add(descriptionData!!)
+                Log.i(TAG, "getDescription: $description")
+                emit(Result.Success(description))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get description : ${e.message}")
+                emit(Result.Error("Failed to get description : ${e.message}"))
             }
         }
 

@@ -17,7 +17,7 @@ import com.example.herbscan.databinding.ActivitySearchBinding
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
-import com.example.herbscan.ui.detail.tab.DescriptionFragment
+import com.example.herbscan.ui.detail.description.DescriptionFragment
 import java.util.ArrayList
 
 class SearchActivity : AppCompatActivity() {
