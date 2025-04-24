@@ -28,12 +28,13 @@ import com.example.herbscan.databinding.PopUpChangesBinding
 import com.example.herbscan.ui.profile.editProfile.bottomsheet.EditProfileBottomSheetFragment
 import com.example.herbscan.ui.profile.editProfile.bottomsheet.OnImageSelectedListener
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.ui.profile.ProfileViewModel
 import java.io.ByteArrayOutputStream
 
 class EditProfileActivity : AppCompatActivity(), OnImageSelectedListener {
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var userAuth: UserAuth
-    private val viewModel by viewModels<EditProfileViewModel> {
+    private val viewModel by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(this)
     }
 

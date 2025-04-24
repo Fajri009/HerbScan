@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_camera"
-        android:name="com.example.herbscan.ui.camera.CameraFragment"
+        android:name="com.example.herbscan.ui.classify.CameraFragment"
         android:label="@string/camera"
         tools:layout="@layout/fragment_camera" />
 

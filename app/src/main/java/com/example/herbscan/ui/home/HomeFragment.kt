@@ -57,8 +57,6 @@ class HomeFragment : Fragment() {
         showListCategory()
         showListPlant()
 
-        getPlantImage("miana")
-
         return binding.root
     }
 
@@ -81,24 +79,6 @@ class HomeFragment : Fragment() {
                                 append(user.last_name)
                             }
                         }
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
-                }
-            }
-        }
-    }
-
-    fun getPlantImage(plantName: String) {
-        viewModel.getImagePlant(plantName).observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE

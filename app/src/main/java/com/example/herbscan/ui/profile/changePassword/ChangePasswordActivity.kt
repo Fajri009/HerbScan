@@ -17,11 +17,12 @@ import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.databinding.ActivityChangePasswordBinding
 import com.example.herbscan.databinding.PopUpChangesBinding
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.ui.profile.ProfileViewModel
 
 class ChangePasswordActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChangePasswordBinding
     private lateinit var userAuth: UserAuth
-    private val viewModel by viewModels<ChangePasswordViewModel> {
+    private val viewModel by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(this)
     }
 

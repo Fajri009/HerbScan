@@ -15,10 +15,11 @@ import com.example.herbscan.databinding.ActivityForgotPassBinding
 import com.example.herbscan.ui.auth.login.LoginActivity
 import com.example.herbscan.utils.Utils
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.ui.auth.AuthViewModel
 
 class ForgotPassActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForgotPassBinding
-    private val viewModel by viewModels<ForgotPassViewModel> {
+    private val viewModel by viewModels<AuthViewModel> {
         ViewModelFactory.getInstance(this)
     }
 
@@ -52,7 +53,7 @@ class ForgotPassActivity : AppCompatActivity() {
         } else if (!Utils.isValidEmail(etEmail)) {
             showToast(getString(R.string.invalid_form))
         } else {
-            viewModel.forgotPass(etEmail).observe(this) { result ->
+            viewModel.changePass(etEmail).observe(this) { result ->
                 if (result != null) {
                     when (result) {
                         is Result.Loading -> {

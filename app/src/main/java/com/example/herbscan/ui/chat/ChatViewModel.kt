@@ -4,16 +4,16 @@ import androidx.lifecycle.ViewModel
 import com.example.herbscan.data.HerbScanRepository
 import com.example.herbscan.data.network.firebase.Chat
 
-class ChatViewModel(private var herbScanRepository: HerbScanRepository): ViewModel() {
+class ChatViewModel(private var repository: HerbScanRepository): ViewModel() {
     fun getCurrentUser() =
-        herbScanRepository.getCurrentUser()
+        repository.getCurrentUser()
 
     fun getChat(plantName: String, discussionId: String) =
-        herbScanRepository.getChat(plantName, discussionId)
+        repository.getChat(plantName, discussionId)
 
     fun addChat(plantName: String, discussionId: String, chat: Chat) =
-        herbScanRepository.addChat(plantName, discussionId, chat)
+        repository.addChat(plantName, discussionId, chat)
 
     fun deleteDiscussion(plantName: String, discussionId: String) =
-        herbScanRepository.deleteDiscussion(plantName, discussionId)
+        repository.deleteDiscussion(plantName, discussionId)
 }

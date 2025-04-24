@@ -18,11 +18,12 @@ import com.example.herbscan.data.network.Result
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
 import com.example.herbscan.ui.detail.description.DescriptionFragment
+import com.example.herbscan.ui.home.HomeViewModel
 import java.util.ArrayList
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
-    private val viewModel by viewModels<SearchViewModel> {
+    private val viewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(this)
     }
     private lateinit var rowPlantAdapter: RowPlantAdapter

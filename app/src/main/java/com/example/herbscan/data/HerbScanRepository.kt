@@ -90,7 +90,7 @@ class HerbScanRepository(
             }
         }
 
-    fun forgotPass(email: String): LiveData<Result<String, String>> =
+    fun changePassword(email: String): LiveData<Result<String, String>> =
         liveData {
             emit(Result.Loading)
 
@@ -330,7 +330,7 @@ class HerbScanRepository(
             }
         }
 
-    fun checkAllFavoritePlant(plantName: String): LiveData<Result<ArrayList<Plant>, String>> =
+    fun getAllFavoritePlant(plantName: String): LiveData<Result<ArrayList<Plant>, String>> =
         liveData {
             emit(Result.Loading)
 
@@ -352,7 +352,7 @@ class HerbScanRepository(
                     }
                 }
 
-                Log.i(TAG, "checkAllFavoritePlant: $favoriteList")
+                Log.i(TAG, "getAllFavoritePlant: $favoriteList")
 
                 val plantSnapshot = plantRef.get().await()
                 val plantList = ArrayList<Plant>()
@@ -364,7 +364,7 @@ class HerbScanRepository(
                         plantList.add(plant)
                     }
                 }
-                Log.i(TAG, "checkAllFavoritePlant: $plantList")
+                Log.i(TAG, "getAllFavoritePlant: $plantList")
 
                 emit(Result.Success(plantList))
             } catch (e: Exception) {
@@ -710,19 +710,6 @@ class HerbScanRepository(
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to update current user : ${e.message}")
                 emit(Result.Error("Failed to update current user : ${e.message}"))
-            }
-        }
-
-    fun changePassword(email: String): LiveData<Result<String, String>> =
-        liveData {
-            emit(Result.Loading)
-
-            try {
-                firebaseAuth.sendPasswordResetEmail(email).await()
-                emit(Result.Success("Email telah dikirim ke email yang terdaftar"))
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to send password reset email : ${e.message}")
-                emit(Result.Error("Failed to send password reset email : ${e.message}"))
             }
         }
 

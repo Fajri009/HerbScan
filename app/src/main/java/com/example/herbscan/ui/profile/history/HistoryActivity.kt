@@ -17,7 +17,7 @@ import com.example.herbscan.data.local.preference.user.UserPreference
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.PredictionResult
 import com.example.herbscan.databinding.ActivityHistoryBinding
-import com.example.herbscan.ui.camera.result.ResultActivity
+import com.example.herbscan.ui.classify.result.ResultActivity
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryBinding

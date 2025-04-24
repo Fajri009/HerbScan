@@ -1,4 +1,4 @@
-package com.example.herbscan.ui.camera.result
+package com.example.herbscan.ui.classify.result
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,10 +20,11 @@ import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.data.network.firebase.PredictionResult
+import com.example.herbscan.ui.classify.ClassifyViewModel
 
 class ResultActivity() : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
-    private val viewModel by viewModels<ResultViewModel> {
+    private val viewModel by viewModels<ClassifyViewModel> {
         ViewModelFactory.getInstance(this)
     }
     private lateinit var plantResult: Plant

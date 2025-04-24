@@ -1,4 +1,4 @@
-package com.example.herbscan.ui.camera
+package com.example.herbscan.ui.classify
 
 import android.Manifest
 import android.content.Context
@@ -36,7 +36,7 @@ import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
 import com.example.herbscan.databinding.FragmentCameraBinding
 import com.example.herbscan.databinding.PopUpInfoBinding
-import com.example.herbscan.ui.camera.result.ResultActivity
+import com.example.herbscan.ui.classify.result.ResultActivity
 import com.example.herbscan.utils.Utils
 import java.io.FileDescriptor
 import java.io.IOException
@@ -49,7 +49,7 @@ class CameraFragment : Fragment() {
     private lateinit var binding: FragmentCameraBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
-    private val viewModel by viewModels<CameraViewModel> {
+    private val viewModel by viewModels<ClassifyViewModel> {
         ViewModelFactory.getInstance(requireContext())
     }
     private var user: UserAuth? = null

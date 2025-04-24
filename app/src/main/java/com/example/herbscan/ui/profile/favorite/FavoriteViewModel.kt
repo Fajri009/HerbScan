@@ -5,5 +5,5 @@ import com.example.herbscan.data.HerbScanRepository
 
 class FavoriteViewModel(private val repository: HerbScanRepository): ViewModel() {
     fun getAllFavorites(plantName: String) =
-        repository.checkAllFavoritePlant(plantName)
+        repository.getAllFavoritePlant(plantName)
 }

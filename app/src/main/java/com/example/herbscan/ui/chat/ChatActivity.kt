@@ -138,6 +138,29 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteDiscussion(plantName: String, discussionId: String) {
+        viewModel.deleteDiscussion(plantName, discussionId).observe(this) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
+
+
+                    finish()
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun addChat(plantName: String, input: String) {
         val fullName = user!!.first_name + " " + user!!.last_name
 
@@ -166,29 +189,6 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun deleteDiscussion(plantName: String, discussionId: String) {
-        viewModel.deleteDiscussion(plantName, discussionId).observe(this) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-
-
-                    finish()
-                }
-                is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                }
-            }
-        }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

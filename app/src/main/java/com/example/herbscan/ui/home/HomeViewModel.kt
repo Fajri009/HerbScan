@@ -7,12 +7,12 @@ class HomeViewModel(private val repository: HerbScanRepository): ViewModel() {
     fun getCurrentUser() =
         repository.getCurrentUser()
 
+    fun getPlantByName(plantName: String) =
+        repository.getPlantByName(plantName)
+
     fun getCategory() =
         repository.getCategory()
 
     fun getAllPlant() =
         repository.getAllPlant()
-
-    fun getImagePlant(plantName: String) =
-        repository.getImagePlant(plantName)
 }

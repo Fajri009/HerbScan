@@ -15,10 +15,11 @@ import com.example.herbscan.databinding.ActivityRegisterBinding
 import com.example.herbscan.ui.auth.login.LoginActivity
 import com.example.herbscan.utils.Utils
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.ui.auth.AuthViewModel
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding : ActivityRegisterBinding
-    private val viewModel by viewModels<RegisterViewModel> {
+    private val viewModel by viewModels<AuthViewModel> {
         ViewModelFactory.getInstance(this)
     }
 

@@ -14,10 +14,11 @@ import com.example.herbscan.data.network.Result
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.databinding.FragmentDescriptionBinding
 import com.example.herbscan.ui.detail.DetailActivity.Companion.TAG
+import com.example.herbscan.ui.detail.DetailViewModel
 
 class DescriptionFragment : Fragment() {
     private lateinit var binding: FragmentDescriptionBinding
-    private val viewModel by viewModels<DescriptionViewModel> {
+    private val viewModel by viewModels<DetailViewModel> {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 

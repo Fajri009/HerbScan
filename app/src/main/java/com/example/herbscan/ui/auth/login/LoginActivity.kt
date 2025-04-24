@@ -21,10 +21,11 @@ import com.example.herbscan.ui.auth.forgotpass.ForgotPassActivity
 import com.example.herbscan.ui.auth.register.RegisterActivity
 import com.example.herbscan.utils.Utils
 import com.example.herbscan.data.network.Result
+import com.example.herbscan.ui.auth.AuthViewModel
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private val viewModel by viewModels<LoginViewModel> {
+    private val viewModel by viewModels<AuthViewModel> {
         ViewModelFactory.getInstance(this)
     }
 
