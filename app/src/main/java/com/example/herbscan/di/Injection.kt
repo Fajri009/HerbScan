@@ -14,6 +14,13 @@ object Injection {
         val firebaseDb = Firebase.database
         val firebaseStorage = FirebaseStorage.getInstance()
         val tfLiteHelper = TFLiteHelper(context)
+
+        // Aktifkan CLAHE dengan parameter default
+        tfLiteHelper.enableCLAHE(true)
+
+        // Atau jika ingin dengan parameter kustom:
+        // tfLiteHelper.enableCLAHE(true, clipLimit = 4.0f, tilesX = 8, tilesY = 8)
+
         return HerbScanRepository(firebaseAuth, firebaseDb, firebaseStorage, tfLiteHelper)
     }
 }
