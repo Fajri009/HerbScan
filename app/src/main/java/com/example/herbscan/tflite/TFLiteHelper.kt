@@ -26,6 +26,9 @@ class TFLiteHelper(private val context: Context) {
     private var claheClipLimit = 4.0f
     private var claheTilesX = 8
     private var claheTilesY = 8
+    private var applyHSVConversion = false
+
+    // Color conversion settings
 
     init {
         try {
@@ -44,6 +47,71 @@ class TFLiteHelper(private val context: Context) {
         claheTilesX = tilesX
         claheTilesY = tilesY
         Log.i(TAG, "CLAHE ${if (enable) "enabled" else "disabled"} with clipLimit=$clipLimit, tiles=${tilesX}x${tilesY}")
+    }
+
+    /**
+     * Enable/disable HSV color conversion
+     * @param enable true to enable HSV conversion, false to disable
+     */
+    fun enableHSVConversion(enable: Boolean) {
+        applyHSVConversion = enable
+        Log.i(TAG, "HSV conversion ${if (enable) "enabled" else "disabled"}")
+    }
+
+    /**
+     * Convert RGB to HSV and back to RGB (useful for color space manipulation)
+     */
+    private fun convertRGBtoHSVtoRGB(src: Bitmap): Bitmap {
+        val startTime = System.currentTimeMillis()
+        Log.d(TAG, "[HSV] Starting RGB->HSV->RGB conversion...")
+
+        val width = src.width
+        val height = src.height
+        val result = Bitmap.createBitmap(width, height, src.config ?: Bitmap.Config.ARGB_8888)
+
+        var pixelCount = 0
+        var avgHue = 0.0
+        var avgSaturation = 0.0
+        var avgValue = 0.0
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val pixel = src.getPixel(x, y)
+                val r = Color.red(pixel) / 255.0f
+                val g = Color.green(pixel) / 255.0f
+                val b = Color.blue(pixel) / 255.0f
+
+                // Convert RGB to HSV
+                val hsv = FloatArray(3)
+                Color.RGBToHSV((r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt(), hsv)
+
+                // Accumulate for averaging
+                avgHue += hsv[0]
+                avgSaturation += hsv[1]
+                avgValue += hsv[2]
+
+                // Optional: Modify HSV values here for enhancement
+                // For example, you can adjust hue, saturation, or value
+
+                // Convert HSV back to RGB
+                val rgb = Color.HSVToColor(hsv)
+                result.setPixel(x, y, rgb)
+
+                pixelCount++
+            }
+        }
+
+        avgHue /= pixelCount
+        avgSaturation /= pixelCount
+        avgValue /= pixelCount
+
+        val processingTime = System.currentTimeMillis() - startTime
+
+        Log.d(TAG, "[HSV] Conversion complete: $processingTime ms")
+        Log.d(TAG, "[HSV] Average HSV: (${avgHue.toInt()}°, ${(avgSaturation * 100).toInt()}%, ${(avgValue * 100).toInt()}%)")
+        Log.d(TAG, "[HSV] Processed $pixelCount pixels")
+
+        return result
     }
 
     // untuk meningkatkan kualitas gambar dengan memperbaiki kontras lokal (area yang pencahayaannya kurang merata)
@@ -186,7 +254,7 @@ class TFLiteHelper(private val context: Context) {
         return result
     }
 
-    fun softmax(logits: FloatArray): FloatArray {
+    private fun softmax(logits: FloatArray): FloatArray {
         val expValues = logits.map { exp(it) }
         val sumExp = expValues.sum()
         return expValues.map { it / sumExp }.toFloatArray()
@@ -196,13 +264,24 @@ class TFLiteHelper(private val context: Context) {
         val startTime = System.currentTimeMillis() // Catat waktu mulai
 
         Log.i(TAG, "applyCLAHE: $applyCLAHE")
+        Log.i(TAG, "applyHSVConversion: $applyHSVConversion")
 
-        val processedBitmap = if (applyCLAHE) {
-            Log.i(TAG, "Applying CLAHE preprocessing to image")
-            applyCLAHE(bitmap)
+        // Apply HSV conversion first if enabled
+        var processedBitmap = if (applyHSVConversion) {
+            Log.i(TAG, "Applying HSV color conversion")
+            convertRGBtoHSVtoRGB(bitmap)
         } else {
-            Log.i(TAG, "CLAHE preprocessing is disabled, using original image")
+            Log.i(TAG, "No HSV conversion applied")
             bitmap
+        }
+
+        // Then apply CLAHE if enabled
+        processedBitmap = if (applyCLAHE) {
+            Log.i(TAG, "Applying CLAHE preprocessing to image")
+            applyCLAHE(processedBitmap) ?: processedBitmap
+        } else {
+            Log.i(TAG, "CLAHE preprocessing is disabled")
+            processedBitmap
         }
 
         val imageTensorIndex = 0
@@ -210,7 +289,7 @@ class TFLiteHelper(private val context: Context) {
         val imageDataType: DataType = interpreter.getInputTensor(imageTensorIndex).dataType()
 
         val inputImageBuffer = TensorImage(imageDataType)
-            .loadImage(imageShape, processedBitmap!!)
+            .loadImage(imageShape, processedBitmap)
         val outputBuffer = TensorBuffer.createFixedSize(interpreter.getOutputTensor(0).shape(), interpreter.getOutputTensor(0).dataType())
         interpreter.run(inputImageBuffer!!.buffer, outputBuffer.buffer.rewind())
 

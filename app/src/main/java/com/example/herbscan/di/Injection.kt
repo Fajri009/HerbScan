@@ -21,6 +21,9 @@ object Injection {
         // Atau jika ingin dengan parameter kustom:
         // tfLiteHelper.enableCLAHE(true, clipLimit = 4.0f, tilesX = 8, tilesY = 8)
 
+        // Aktifkan HSV conversion
+        tfLiteHelper.enableHSVConversion(true)
+
         return HerbScanRepository(firebaseAuth, firebaseDb, firebaseStorage, tfLiteHelper)
     }
 }
