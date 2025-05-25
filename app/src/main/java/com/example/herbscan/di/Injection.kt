@@ -18,11 +18,15 @@ object Injection {
         // Aktifkan CLAHE dengan parameter default
         tfLiteHelper.enableCLAHE(true)
 
-        // Atau jika ingin dengan parameter kustom:
-        // tfLiteHelper.enableCLAHE(true, clipLimit = 4.0f, tilesX = 8, tilesY = 8)
-
         // Aktifkan HSV conversion
         tfLiteHelper.enableHSVConversion(true)
+
+        // Aktifkan data augmentation
+        tfLiteHelper.enableDataAugmentation(
+            enable = true,
+            hFlip = true,         // Flip horizontal
+            brightness = 0.1f     // Tingkatkan kecerahan sebesar 10%
+        )
 
         return HerbScanRepository(firebaseAuth, firebaseDb, firebaseStorage, tfLiteHelper)
     }

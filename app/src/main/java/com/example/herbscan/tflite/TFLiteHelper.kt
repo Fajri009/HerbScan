@@ -3,7 +3,12 @@ package com.example.herbscan.tflite
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Matrix
+import android.graphics.Paint
 import android.util.Log
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
@@ -28,7 +33,12 @@ class TFLiteHelper(private val context: Context) {
     private var claheTilesY = 8
     private var applyHSVConversion = false
 
-    // Color conversion settings
+    // Data augmentation settings
+    private var applyDataAugmentation = false
+    private var rotationDegrees = 0f
+    private var horizontalFlip = false
+    private var verticalFlip = false
+    private var brightnessAdjustment = 0f
 
     init {
         try {
@@ -49,18 +59,32 @@ class TFLiteHelper(private val context: Context) {
         Log.i(TAG, "CLAHE ${if (enable) "enabled" else "disabled"} with clipLimit=$clipLimit, tiles=${tilesX}x${tilesY}")
     }
 
-    /**
-     * Enable/disable HSV color conversion
-     * @param enable true to enable HSV conversion, false to disable
-     */
     fun enableHSVConversion(enable: Boolean) {
         applyHSVConversion = enable
         Log.i(TAG, "HSV conversion ${if (enable) "enabled" else "disabled"}")
     }
 
-    /**
-     * Convert RGB to HSV and back to RGB (useful for color space manipulation)
-     */
+    fun enableDataAugmentation(
+        enable: Boolean,
+        rotation: Float = 0f,
+        hFlip: Boolean = false,
+        vFlip: Boolean = false,
+        brightness: Float = 0f
+    ) {
+        applyDataAugmentation = enable
+        rotationDegrees = rotation % 360
+        horizontalFlip = hFlip
+        verticalFlip = vFlip
+        brightnessAdjustment = brightness.coerceIn(-1.0f, 1.0f)
+
+        Log.i(TAG, "Data augmentation ${if (enable) "enabled" else "disabled"} with:" +
+                " rotation=$rotationDegrees°," +
+                " horizontalFlip=$horizontalFlip," +
+                " verticalFlip=$verticalFlip," +
+                " brightness=$brightnessAdjustment")
+    }
+
+    // Convert RGB to HSV and back to RGB (useful for color space manipulation)
     private fun convertRGBtoHSVtoRGB(src: Bitmap): Bitmap {
         val startTime = System.currentTimeMillis()
         Log.d(TAG, "[HSV] Starting RGB->HSV->RGB conversion...")
@@ -90,9 +114,6 @@ class TFLiteHelper(private val context: Context) {
                 avgSaturation += hsv[1]
                 avgValue += hsv[2]
 
-                // Optional: Modify HSV values here for enhancement
-                // For example, you can adjust hue, saturation, or value
-
                 // Convert HSV back to RGB
                 val rgb = Color.HSVToColor(hsv)
                 result.setPixel(x, y, rgb)
@@ -114,7 +135,7 @@ class TFLiteHelper(private val context: Context) {
         return result
     }
 
-    // untuk meningkatkan kualitas gambar dengan memperbaiki kontras lokal (area yang pencahayaannya kurang merata)
+    // Untuk meningkatkan kualitas gambar dengan memperbaiki kontras lokal (area yang pencahayaannya kurang merata)
     private fun applyCLAHE(src: Bitmap): Bitmap? {
         val startTime = System.currentTimeMillis()
         Log.d(TAG, "Starting CLAHE with clipLimit=$claheClipLimit, tiles=${claheTilesX}x${claheTilesY}")
@@ -254,6 +275,74 @@ class TFLiteHelper(private val context: Context) {
         return result
     }
 
+    private fun applyDataAugmentation(src: Bitmap): Bitmap {
+        val startTime = System.currentTimeMillis()
+        Log.d(TAG, "[Augmentation] Starting image augmentation...")
+
+        var result = src
+
+        // Create transformation matrix
+        val matrix = Matrix()
+
+        // Apply rotation if needed
+        if (rotationDegrees != 0f) {
+            matrix.postRotate(rotationDegrees)
+        }
+
+        // Apply flips if needed
+        val scaleX = if (horizontalFlip) -1f else 1f
+        val scaleY = if (verticalFlip) -1f else 1f
+
+        if (horizontalFlip || verticalFlip) {
+            // When flipping, we need to adjust the pivot point
+            matrix.postScale(scaleX, scaleY, src.width / 2f, src.height / 2f)
+        }
+
+        // Apply matrix transformation if any transform is needed
+        if (rotationDegrees != 0f || horizontalFlip || verticalFlip) {
+            result = Bitmap.createBitmap(
+                src,
+                0, 0,
+                src.width, src.height,
+                matrix,
+                true
+            )
+        }
+
+        // Apply brightness adjustment if needed
+        if (brightnessAdjustment != 0f) {
+            result = adjustBrightness(result, brightnessAdjustment)
+        }
+
+        val processingTime = System.currentTimeMillis() - startTime
+        Log.d(TAG, "[Augmentation] Completed in $processingTime ms")
+
+        return result
+    }
+
+    private fun adjustBrightness(src: Bitmap, value: Float): Bitmap {
+        // Convert -1.0 to 1.0 scale to a 0-255 scale for the ColorMatrix
+        val adjustedValue = value * 100f
+
+        val cm = ColorMatrix()
+        cm.set(
+            floatArrayOf(
+                1f, 0f, 0f, 0f, adjustedValue,
+                0f, 1f, 0f, 0f, adjustedValue,
+                0f, 0f, 1f, 0f, adjustedValue,
+                0f, 0f, 0f, 1f, 0f
+            )
+        )
+
+        val result = Bitmap.createBitmap(src.width, src.height, src.config!!)
+        val canvas = Canvas(result)
+        val paint = Paint()
+        paint.colorFilter = ColorMatrixColorFilter(cm)
+        canvas.drawBitmap(src, 0f, 0f, paint)
+
+        return result
+    }
+
     private fun softmax(logits: FloatArray): FloatArray {
         val expValues = logits.map { exp(it) }
         val sumExp = expValues.sum()
@@ -265,6 +354,7 @@ class TFLiteHelper(private val context: Context) {
 
         Log.i(TAG, "applyCLAHE: $applyCLAHE")
         Log.i(TAG, "applyHSVConversion: $applyHSVConversion")
+        Log.i(TAG, "applyDataAugmentation: $applyDataAugmentation")
 
         // Apply HSV conversion first if enabled
         var processedBitmap = if (applyHSVConversion) {
@@ -281,6 +371,15 @@ class TFLiteHelper(private val context: Context) {
             applyCLAHE(processedBitmap) ?: processedBitmap
         } else {
             Log.i(TAG, "CLAHE preprocessing is disabled")
+            processedBitmap
+        }
+
+        // Apply data augmentation if enabled - THIS IS THE ADDITION!
+        processedBitmap = if (applyDataAugmentation) {
+            Log.i(TAG, "Applying data augmentation to image")
+            applyDataAugmentation(processedBitmap)
+        } else {
+            Log.i(TAG, "Data augmentation is disabled")
             processedBitmap
         }
 
