@@ -196,31 +196,31 @@ class HerbScanRepository(
             }
         }
 
-    fun getImagePlant(plantName: String): LiveData<Result<String, String>> =
-        liveData {
-            emit(Result.Loading)
-
-            try {
-                val imagePlant = storageRef.child("plant/$plantName.jpg")
-                val downloadUrl = imagePlant.downloadUrl.await()
-
-                val plantSnapshot = plantRef.get().await()
-
-                for (plantData in plantSnapshot.children) {
-                    val plant = plantData.getValue(Plant::class.java)
-                    if (plant != null && plant.name.contains(plantName, ignoreCase = true)) {
-                        val updatePlant = plant.copy(picture = downloadUrl.toString())
-                        plantData.ref.setValue(updatePlant).await()
-                        emit(Result.Success("Berhasil memperbarui gambar tanaman"))
-                    }
-                }
-
-                Log.i(TAG, "classifyImage ($plantName): $downloadUrl")
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to get image plant : ${e.message}")
-                emit(Result.Error("Failed to get image plant : ${e.message}"))
-            }
-        }
+//    fun getImagePlant(plantName: String): LiveData<Result<String, String>> =
+//        liveData {
+//            emit(Result.Loading)
+//
+//            try {
+//                val imagePlant = storageRef.child("plant/$plantName.jpg")
+//                val downloadUrl = imagePlant.downloadUrl.await()
+//
+//                val plantSnapshot = plantRef.get().await()
+//
+//                for (plantData in plantSnapshot.children) {
+//                    val plant = plantData.getValue(Plant::class.java)
+//                    if (plant != null && plant.name.contains(plantName, ignoreCase = true)) {
+//                        val updatePlant = plant.copy(picture = downloadUrl.toString())
+//                        plantData.ref.setValue(updatePlant).await()
+//                        emit(Result.Success("Berhasil memperbarui gambar tanaman"))
+//                    }
+//                }
+//
+//                Log.i(TAG, "classifyImage ($plantName): $downloadUrl")
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Failed to get image plant : ${e.message}")
+//                emit(Result.Error("Failed to get image plant : ${e.message}"))
+//            }
+//        }
 
     fun getCurrentPlant(plantName: String): LiveData<Result<String, String>> =
         liveData {
@@ -572,12 +572,46 @@ class HerbScanRepository(
             }
         }
 
-    fun classifyImage(image: Bitmap): LiveData<Result<Triple<String, String, String>, String>> =
+    fun classifyImage(
+        image: Bitmap,
+        clahe: Boolean,
+        colorConversion: Boolean,
+        dataAugmentation: Boolean
+    ): LiveData<Result<Triple<String, String, String>, String>> =
         liveData {
             emit(Result.Loading)
 
+            Log.i(TAG, "classifyImage: ${clahe}, ${colorConversion}, ${dataAugmentation}")
+
             try {
-                val result = tfLiteHelper.classifyImage(image)
+                if (clahe) {
+                    // Aktifkan CLAHE dengan parameter default
+                    tfLiteHelper.enableCLAHE(true)
+                } else {
+                    tfLiteHelper.disableCLAHE()
+                }
+
+                if (colorConversion) {
+                    // Aktifkan HSV conversion
+                    tfLiteHelper.enableHSVConversion(true)
+                } else {
+                    tfLiteHelper.disableHSVConversion()
+                }
+
+                if (dataAugmentation) {
+                    // Aktifkan data augmentation
+                    tfLiteHelper.enableDataAugmentation(
+                        enable = true,
+                        rotation = 0f,
+                        hFlip = false,      // Hindari flip jika bisa mengubah karakteristik
+                        vFlip = false,
+                        brightness = 0.1f   // Brightness adjustment kecil
+                    )
+                } else {
+                    tfLiteHelper.disableDataAugmentation()
+                }
+
+                val result = tfLiteHelper.classifyImage(image, clahe, colorConversion, dataAugmentation)
 
                 emit(Result.Success(result))
             } catch (e: Exception) {

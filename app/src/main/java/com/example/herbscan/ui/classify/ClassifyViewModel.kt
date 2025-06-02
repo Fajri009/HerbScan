@@ -10,8 +10,8 @@ class ClassifyViewModel(private val repository: HerbScanRepository): ViewModel()
     fun getCurrentUser() =
         repository.getCurrentUser()
 
-    fun classifyImage(image: Bitmap) =
-        repository.classifyImage(image)
+    fun classifyImage(image: Bitmap, clahe: Boolean, colorConversion: Boolean, dataAugmentation: Boolean) =
+        repository.classifyImage(image, clahe, colorConversion, dataAugmentation)
 
     fun addPredictionResult(result: PredictionResult, image: Uri, uid: String) =
         repository.addPredictionResult(result, image, uid)

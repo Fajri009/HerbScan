@@ -15,19 +15,6 @@ object Injection {
         val firebaseStorage = FirebaseStorage.getInstance()
         val tfLiteHelper = TFLiteHelper(context)
 
-        // Aktifkan CLAHE dengan parameter default
-        tfLiteHelper.enableCLAHE(true)
-
-        // Aktifkan HSV conversion
-        tfLiteHelper.enableHSVConversion(true)
-
-        // Aktifkan data augmentation
-        tfLiteHelper.enableDataAugmentation(
-            enable = true,
-            hFlip = true,         // Flip horizontal
-            brightness = 0.1f     // Tingkatkan kecerahan sebesar 10%
-        )
-
         return HerbScanRepository(firebaseAuth, firebaseDb, firebaseStorage, tfLiteHelper)
     }
 }

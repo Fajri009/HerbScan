@@ -34,6 +34,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.herbscan.R
 import com.example.herbscan.ViewModelFactory
+import com.example.herbscan.data.local.preference.classification.ClassificationFeatures
+import com.example.herbscan.data.local.preference.classification.Features
 import com.example.herbscan.databinding.FragmentCameraBinding
 import com.example.herbscan.databinding.PopUpInfoBinding
 import com.example.herbscan.ui.classify.result.ResultActivity
@@ -54,6 +56,9 @@ class CameraFragment : Fragment() {
     }
     private var user: UserAuth? = null
 
+    private var featuresModel = Features()
+    private lateinit var classificationFeatures: ClassificationFeatures
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,10 +71,17 @@ class CameraFragment : Fragment() {
 
         getCurrentUser()
 
+        classificationFeatures = ClassificationFeatures(requireContext())
+        featuresModel = classificationFeatures.getFeatures()
+
         binding.apply {
-            ivCaptureCamera.setOnClickListener { takePhoto() }
+            ivCaptureCamera.setOnClickListener { takePhoto(featuresModel) }
             ivInfo.setOnClickListener { showInfo() }
             ivGalleryCamera.setOnClickListener { startGallery() }
+            ivSetting.setOnClickListener {
+                val intent = Intent(requireContext(), SettingClassificationActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         return binding.root
@@ -84,6 +96,9 @@ class CameraFragment : Fragment() {
         super.onResume()
         startCamera()
         binding.ivCaptureCamera.isEnabled = true
+
+        classificationFeatures = ClassificationFeatures(requireContext())
+        featuresModel = classificationFeatures.getFeatures()
     }
 
     override fun onStop() {
@@ -176,7 +191,7 @@ class CameraFragment : Fragment() {
         }
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(featuresModel: Features) {
         val imageCapture = imageCapture ?: return
 
         binding.ivCaptureCamera.isEnabled = false
@@ -200,7 +215,7 @@ class CameraFragment : Fragment() {
                     val savedUri = Uri.fromFile(photoFile)
                     val rotation = computeRelativeRotation()
                     val bitmap = savedUri.toBitmap()?.rotateBitmap(rotation.toFloat())
-                    classifyImage(bitmap!!, alertDialog, savedUri)
+                    classifyImage(bitmap!!, alertDialog, savedUri, featuresModel)
                 }
 
                 override fun onError(exc: ImageCaptureException) {
@@ -232,14 +247,14 @@ class CameraFragment : Fragment() {
                 .create()
             alertDialog.show()
 
-            classifyImage(bitmap!!, alertDialog, uri)
+            classifyImage(bitmap!!, alertDialog, uri, featuresModel)
         } else {
             Toast.makeText(requireContext(), "No media selected", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun classifyImage(image: Bitmap, alertDialog: AlertDialog, uri: Uri) {
-        viewModel.classifyImage(image).observe(viewLifecycleOwner) { result ->
+    private fun classifyImage(image: Bitmap, alertDialog: AlertDialog, uri: Uri, featuresModel: Features) {
+        viewModel.classifyImage(image, featuresModel.clahe, featuresModel.colorConversion, featuresModel.dataAugmentation).observe(viewLifecycleOwner) { result ->
             if (result != null) {
                 when (result) {
                     is Result.Loading -> {}

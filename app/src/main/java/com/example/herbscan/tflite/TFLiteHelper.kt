@@ -59,9 +59,19 @@ class TFLiteHelper(private val context: Context) {
         Log.i(TAG, "CLAHE ${if (enable) "enabled" else "disabled"} with clipLimit=$clipLimit, tiles=${tilesX}x${tilesY}")
     }
 
+    fun disableCLAHE() {
+        applyCLAHE = false
+        Log.i(TAG, "CLAHE disabled")
+    }
+
     fun enableHSVConversion(enable: Boolean) {
         applyHSVConversion = enable
         Log.i(TAG, "HSV conversion ${if (enable) "enabled" else "disabled"}")
+    }
+
+    fun disableHSVConversion() {
+        applyHSVConversion = false
+        Log.i(TAG, "[HSV] conversion disabled")
     }
 
     fun enableDataAugmentation(
@@ -84,6 +94,15 @@ class TFLiteHelper(private val context: Context) {
                 " brightness=$brightnessAdjustment")
     }
 
+    fun disableDataAugmentation() {
+        applyDataAugmentation = false
+        rotationDegrees = 0f
+        horizontalFlip = false
+        verticalFlip = false
+        brightnessAdjustment = 0f
+        Log.i(TAG, "Data augmentation disabled and reset to defaults")
+    }
+
     // Convert RGB to HSV and back to RGB (useful for color space manipulation)
     private fun convertRGBtoHSVtoRGB(src: Bitmap): Bitmap {
         val startTime = System.currentTimeMillis()
@@ -93,7 +112,7 @@ class TFLiteHelper(private val context: Context) {
         val height = src.height
         val result = Bitmap.createBitmap(width, height, src.config ?: Bitmap.Config.ARGB_8888)
 
-        var pixelCount = 0
+        val pixelCount = 0
         var avgHue = 0.0
         var avgSaturation = 0.0
         var avgValue = 0.0
@@ -105,22 +124,24 @@ class TFLiteHelper(private val context: Context) {
                 val g = Color.green(pixel) / 255.0f
                 val b = Color.blue(pixel) / 255.0f
 
-                // Convert RGB to HSV
                 val hsv = FloatArray(3)
                 Color.RGBToHSV((r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt(), hsv)
 
-                // Accumulate for averaging
-                avgHue += hsv[0]
-                avgSaturation += hsv[1]
-                avgValue += hsv[2]
+                // TAMBAHKAN MANIPULASI HSV DI SINI:
+                // Contoh: Enhance saturation untuk membuat warna lebih vivid
+                hsv[1] = (hsv[1] * 1.2f).coerceIn(0f, 1f) // Increase saturation
 
-                // Convert HSV back to RGB
+                // Atau adjust brightness/value
+                hsv[2] = (hsv[2] * 1.1f).coerceIn(0f, 1f) // Increase brightness
+
+                // Atau adjust hue untuk color correction
+                // hsv[0] = (hsv[0] + 10f) % 360f // Shift hue slightly
+
                 val rgb = Color.HSVToColor(hsv)
                 result.setPixel(x, y, rgb)
-
-                pixelCount++
             }
         }
+
 
         avgHue /= pixelCount
         avgSaturation /= pixelCount
@@ -349,7 +370,12 @@ class TFLiteHelper(private val context: Context) {
         return expValues.map { it / sumExp }.toFloatArray()
     }
 
-    fun classifyImage(bitmap: Bitmap): Triple<String, String, String> {
+    fun classifyImage(
+        bitmap: Bitmap,
+        clahe: Boolean,
+        colorConversion: Boolean,
+        dataAugmentation: Boolean
+    ): Triple<String, String, String> {
         val startTime = System.currentTimeMillis() // Catat waktu mulai
 
         Log.i(TAG, "applyCLAHE: $applyCLAHE")
@@ -415,7 +441,16 @@ class TFLiteHelper(private val context: Context) {
         val inferenceTimeSeconds = inferenceTime / 1000.0
         Log.d(TAG, "Inference time: $inferenceTime ms")
 
-        Log.i(TAG, "Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+        if (clahe) {
+            Log.i(TAG, "[CLAHE] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+        } else if (colorConversion) {
+            Log.i(TAG, "[HSV] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+        } else if (dataAugmentation) {
+            Log.i(TAG, "[Data Augmentation] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+        } else {
+            Log.i(TAG, "[Normal] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+        }
+
 
         return Triple(foundLabel, "%.4f".format(confidence), "$inferenceTimeSeconds seconds")
     }

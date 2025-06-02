@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/shades_50"
+    tools:context=".ui.classify.SettingClassificationActivity">
+
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_700"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp"
+        android:paddingTop="45dp"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_back"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/tv_change_password"
+            style="@style/TextAppearance.AppCompat.TextXl.Semibold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/setting_camera"
+            android:textColor="@color/shades_50"
+            android:gravity="center"
+            android:layout_marginEnd="45dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/clahe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.TextSm.Medium"
+                android:layout_width="wrap_content"
+                android:text="@string/clahe" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.TextXs.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_clahe"
+                android:textColor="@color/secondary_700"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cb_clahe"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="10dp"
+            app:buttonTint="@color/primary_400" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/color_conversion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/clahe"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.TextSm.Medium"
+                android:layout_width="wrap_content"
+                android:text="@string/color_conversion" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.TextXs.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_color_conversion"
+                android:textColor="@color/secondary_700"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cb_color_conversion"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="10dp"
+            app:buttonTint="@color/primary_400" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/data_augmentation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/color_conversion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.TextSm.Medium"
+                android:layout_width="wrap_content"
+                android:text="@string/data_augmentation" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.TextXs.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_data_augmentation"
+                android:textColor="@color/secondary_700"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cb_data_augmentation"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="10dp"
+            app:buttonTint="@color/primary_400" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

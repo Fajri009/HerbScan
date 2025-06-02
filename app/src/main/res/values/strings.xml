@@ -111,6 +111,15 @@
     <string name="point_the_camera">Arahkan kamera ke\ntanaman di depanmu</string>
     <string name="detail_info_camera">Kami akan memberikan\ninformasi mengenai detail\ndari tanaman tersebut</string>
 
+    <!-- Setting Camera -->
+    <string name="setting_camera">Pengaturan Kamera</string>
+    <string name="clahe">Tingkatkan Kontras Gambar</string>
+    <string name="desc_clahe">*Membantu gambar terlihat lebih jelas dengan meningkatkan perbedaan warna</string>
+    <string name="color_conversion">Sesuaikan Warna Gambar</string>
+    <string name="desc_color_conversion">*Mengubah warna agar sistem lebih mudah mengenali tanaman</string>
+    <string name="data_augmentation">Aktifkan Perbaikan Gambar Otomatis</string>
+    <string name="desc_data_augmentation">*Membalik dan mencerahkan gambar secara otomatis untuk akurasi lebih baik</string>
+
     <!-- Result -->
     <string name="result">Hasil</string>
     <string name="percentage">90%</string>
