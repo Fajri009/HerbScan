@@ -430,29 +430,34 @@ class TFLiteHelper(private val context: Context) {
         outputArray = softmax(outputArray)
 
         for (i in outputArray.indices) {
-            Log.d(TAG, "Label: ${labels[i]} - Probability: ${outputArray[i]}")
+            // Ubah probabilitas ke persen untuk log
+            val probabilityPercent = outputArray[i] * 100
+            Log.d(TAG, "Label: ${labels[i]} - Probability: ${"%.2f".format(probabilityPercent)}%")
         }
 
         val maxIndex = outputArray.indices.maxByOrNull { outputArray[it] } ?: -1
         val foundLabel = if (maxIndex >= 0) labels[maxIndex] else ""
         val confidence = if (maxIndex >= 0) outputArray[maxIndex] else 0.0f
 
+        // Konversi confidence ke persen
+        val confidencePercent = confidence * 100
+
         val inferenceTime = System.currentTimeMillis() - startTime
         val inferenceTimeSeconds = inferenceTime / 1000.0
         Log.d(TAG, "Inference time: $inferenceTime ms")
 
         if (clahe) {
-            Log.i(TAG, "[CLAHE] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+            Log.i(TAG, "[CLAHE] Classified as: $foundLabel with probability: ${"%.2f".format(confidencePercent)}% and inference time: $inferenceTimeSeconds seconds")
         } else if (colorConversion) {
-            Log.i(TAG, "[HSV] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+            Log.i(TAG, "[HSV] Classified as: $foundLabel with probability: ${"%.2f".format(confidencePercent)}% and inference time: $inferenceTimeSeconds seconds")
         } else if (dataAugmentation) {
-            Log.i(TAG, "[Data Augmentation] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+            Log.i(TAG, "[Data Augmentation] Classified as: $foundLabel with probability: ${"%.2f".format(confidencePercent)}% and inference time: $inferenceTimeSeconds seconds")
         } else {
-            Log.i(TAG, "[Normal] Classified as: $foundLabel with probability: ${"%.4f".format(confidence)} and inference time: $inferenceTimeSeconds seconds")
+            Log.i(TAG, "[Normal] Classified as: $foundLabel with probability: ${"%.2f".format(confidencePercent)}% and inference time: $inferenceTimeSeconds seconds")
         }
 
-
-        return Triple(foundLabel, "%.4f".format(confidence), "$inferenceTimeSeconds seconds")
+        // Return probabilitas dalam bentuk persen
+        return Triple(foundLabel, "${"%.2f".format(confidencePercent)}%", "$inferenceTimeSeconds seconds")
     }
 
     private fun loadModelFile(activity: Activity): MappedByteBuffer {
@@ -464,6 +469,7 @@ class TFLiteHelper(private val context: Context) {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
     }
 
+    // Fitur resizing (untuk memastikan gambar sesuai dengan ukuran input yang diharapkan oleh model TensorFlow Lite)
     private fun TensorImage.loadImage(imageShape: IntArray, bitmap: Bitmap): TensorImage? {
         this.load(bitmap)
         val imageProcessor = ImageProcessor.Builder()
@@ -473,6 +479,7 @@ class TFLiteHelper(private val context: Context) {
         return imageProcessor.process(this)
     }
 
+    // Fitur nomalisasi min-max (menerima input dalam format yang konsisten dan optimal untuk pemrosesan neural network_
     private fun getPreprocessNormalizeOp(): TensorOperator {
         return NormalizeOp(0.0f, 255.0f)
     }

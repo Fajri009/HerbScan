@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import com.bumptech.glide.Glide
 import com.example.herbscan.R
@@ -57,7 +58,13 @@ class ResultActivity() : AppCompatActivity() {
     private fun getPredictionResult(predictionResult: PredictionResult) {
         val namePlantPure = predictionResult.prediction.substringAfterLast("(").removeSuffix(")").trim()
         val scientificName = predictionResult.prediction.substringBeforeLast("(").trim()
+        val accuracyNumber = predictionResult.probability
+
+        val accuracyCheck = accuracyNumber.replace("%", "").replace(",", ".").toDouble()
+
         Log.i(TAG, "classifyImage: namePlant = $namePlantPure")
+        Log.i(TAG, "getPredictionResult: probability = $accuracyNumber")
+        Log.i(TAG, "getPredictionResult: accuracyCheck = $accuracyCheck")
 
         getPlantByName(namePlantPure)
 
@@ -67,6 +74,17 @@ class ResultActivity() : AppCompatActivity() {
                 .into(ivPlant)
             tvPlantName.text = namePlantPure
             tvPlantScientificName.text = scientificName
+            tvAccuracyNumber.text = accuracyNumber
+
+            if (accuracyCheck >= 80) {
+                tvAccuracyNumber.setTextColor(ContextCompat.getColor(this@ResultActivity, R.color.success_50))
+                layoutResultSuccess.visibility = View.VISIBLE
+                layoutResultFailed.visibility = View.GONE
+            } else {
+                tvAccuracyNumber.setTextColor(ContextCompat.getColor(this@ResultActivity, R.color.error_50))
+                layoutResultSuccess.visibility = View.GONE
+                layoutResultFailed.visibility = View.VISIBLE
+            }
         }
     }
 

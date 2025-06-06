@@ -126,6 +126,8 @@
     <string name="accuracy">Akurasi</string>
     <string name="arrow_detail">Arah panah detail</string>
     <string name="one_hundred_percent">100%</string>
+    <string name="accurate">Hasil klasifikasi ini cukup akurat dan dapat dipercaya</string>
+    <string name="not_acurate">Hasil klasifikasi belum pasti, coba ambil gambar yang lebih jelas</string>
 
     <!-- Profile -->
     <string name="profile">Profil</string>
