@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.detail.description.DescriptionFragment">
+    tools:context=".ui.detail.tab.DescriptionFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,12 +38,58 @@
                 android:textColor="@color/neutral_500"
                 android:layout_marginStart="5dp" />
         </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.TextSm.Semibold"
+                    android:layout_width="wrap_content"
+                    android:text="@string/short_rating"
+                    android:textColor="@color/shades_100" />
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.TextXs.Medium"
+                    android:layout_width="wrap_content"
+                    android:text="@string/rating_from"
+                    android:textColor="@color/shades_100"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center|end">
+
+                <TextView
+                    android:id="@+id/tv_avg_rating"
+                    style="@style/TextAppearance.AppCompat.TextXs.Medium"
+                    android:layout_width="wrap_content"
+                    android:text="@string/rating_number"
+                    android:textColor="@color/primary_900" />
+                
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_star_filled"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@string/icon_star" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_benefit"
             style="@style/TextAppearance.AppCompat.TextSm.Semibold"
             android:layout_width="wrap_content"
             android:text="@string/benefit"
+            android:layout_marginTop="15dp"
             android:textColor="@color/shades_100" />
 
         <TextView

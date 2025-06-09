@@ -21,7 +21,8 @@ import com.example.herbscan.data.network.firebase.Category
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
-import com.example.herbscan.ui.detail.description.DescriptionFragment
+import com.example.herbscan.ui.detail.tab.DescriptionFragment
+import com.example.herbscan.ui.detail.tab.RatingFragment
 import com.example.herbscan.ui.home.search.SearchActivity
 import java.util.ArrayList
 
@@ -242,6 +243,9 @@ class HomeFragment : Fragment() {
 
         val descriptionIntent = Intent(requireContext(), DescriptionFragment::class.java)
         descriptionIntent.putExtra(DescriptionFragment.EXTRA_PLANT, data)
+
+        val ratingIntent = Intent(requireContext(), RatingFragment::class.java)
+        ratingIntent.putExtra(RatingFragment.EXTRA_PLANT, data)
     }
 
     private fun showToast(message: String) {

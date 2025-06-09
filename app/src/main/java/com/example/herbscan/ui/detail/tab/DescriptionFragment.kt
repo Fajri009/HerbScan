@@ -1,4 +1,4 @@
-package com.example.herbscan.ui.detail.description
+package com.example.herbscan.ui.detail.tab
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder

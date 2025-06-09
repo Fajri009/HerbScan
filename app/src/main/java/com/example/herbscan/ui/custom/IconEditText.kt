@@ -1,5 +1,6 @@
 package com.example.herbscan.ui.custom
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.text.InputType
@@ -8,7 +9,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.example.herbscan.R
 
 class IconEditText @JvmOverloads constructor(
-    context: android.content.Context,
+    context: Context,
     attrs: AttributeSet? = null,
 ): AppCompatEditText(context, attrs) {
     private var iconEditText: Drawable?

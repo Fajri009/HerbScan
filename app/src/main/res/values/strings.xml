@@ -80,10 +80,23 @@
     <string name="plant_habitat">Habitat Tanaman</string>
     <string name="biodata">Biodata</string>
     <string name="description">Deskripsi</string>
+    <string name="rating">Ulasan</string>
     <string name="benefit">Manfaat</string>
     <string name="how_to_use">Cara Penggunaan</string>
     <string name="side_effect">Efek Samping</string>
     <string name="discussion">Diskusi</string>
+    <string name="asking_for_rating">Ingin menambahkan ulasan?</string>
+    <string name="add_rating">Tambah Ulasan</string>
+    <string name="rating_number">5.0</string>
+
+    <!-- Rating -->
+    <string name="rating_plant">Nilai Tanaman</string>
+    <string name="short_rating">Ulasan Singkat</string>
+    <string name="rating_from">Diulas oleh %1$s orang</string>
+    <string name="icon_star">Ikon Bintang</string>
+    <string name="add_rating_2">Tambahkan Ulasan</string>
+    <string name="add_photo">Tambahkan Foto</string>
+    <string name="photo_rating">Foto Ulasan</string>
 
     <!-- Discussion -->
     <string name="discussion_plant">Diskusi (%1$s)</string>

@@ -247,7 +247,8 @@ class DetailActivity : AppCompatActivity() {
         @StringRes
         private val TAB_TITLES = intArrayOf(
             R.string.biodata,
-            R.string.description
+            R.string.description,
+            R.string.rating
         )
     }
 }

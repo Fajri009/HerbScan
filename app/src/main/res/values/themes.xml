@@ -6,6 +6,12 @@
 
     <style name="Theme.HerbScan" parent="Base.Theme.HerbScan" />
 
+    <style name="CustomRatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:maxHeight">24dp</item>
+    </style>
+
     <!-- Display 2Xl -->
     <style name="TextAppearance.AppCompat.Display2Xl">
         <item name="android:textSize">72sp</item>
