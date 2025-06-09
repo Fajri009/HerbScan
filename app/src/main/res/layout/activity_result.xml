@@ -94,6 +94,7 @@
                 android:background="@drawable/outlined_transparant_recommendation"
                 android:paddingHorizontal="15dp"
                 android:paddingVertical="5dp"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -121,6 +122,7 @@
                 android:layout_width="wrap_content"
                 android:text="@string/plant_name"
                 android:textColor="@color/shades_50"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_recommend" />
 

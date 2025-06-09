@@ -1,7 +1,5 @@
 package com.example.herbscan.adapter
 
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +11,7 @@ import com.example.herbscan.R
 import com.example.herbscan.data.network.firebase.Chat
 import com.example.herbscan.utils.Utils.getRelativeTimeDifference
 
-class ChatAdapter(var list: MutableList<Chat>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(private var list: MutableList<Chat>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivProfilePic: ImageView = itemView.findViewById(R.id.iv_profile_pic)
         val tvName: TextView = itemView.findViewById(R.id.tv_name)

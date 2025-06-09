@@ -128,8 +128,8 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
             val rating = Rating(
                 "",
                 user!!.uid!!,
-                user!!.profile_pic!!,
                 user!!.first_name + " " + user!!.last_name,
+                user!!.profile_pic!!,
                 ratingValue,
                 etRating,
                 "",

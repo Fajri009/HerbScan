@@ -10,14 +10,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="10dp"
-        android:paddingHorizontal="30dp">
+        android:paddingHorizontal="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:visibility="gone"
             android:id="@+id/rv_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             tools:listitem="@layout/item_rating" />
 
         <LinearLayout
@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_marginTop="10dp">
 
             <TextView
@@ -38,10 +39,17 @@
                 style="@style/TextAppearance.AppCompat.TextXxs.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="@string/add_discussion"
+                android:text="@string/add_rating_2"
                 android:background="@drawable/custom_button"
                 android:textColor="@color/shades_50"
                 android:layout_marginTop="10dp"/>
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:indeterminateTint="@color/primary_900"
+            android:layout_gravity="center"/>
     </LinearLayout>
 </ScrollView>

@@ -11,10 +11,10 @@ data class Rating(
     val profilePic: String = "",
     val rating: Int = 0,
     val desc: String = "",
-    val time: String = "",
     var image1: String = "",
     var image2: String = "",
     var image3: String = "",
     var image4: String = "",
-    var image5: String = ""
+    var image5: String = "",
+    val time: String = "",
 ): Parcelable

@@ -16,8 +16,6 @@ import com.example.herbscan.data.network.firebase.PredictionResult
 import com.example.herbscan.data.network.firebase.Rating
 import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.tflite.TFLiteHelper
-import com.example.herbscan.ui.detail.DetailActivity
-import com.example.herbscan.ui.detail.DetailActivity.Companion
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -395,6 +393,43 @@ class HerbScanRepository(
             }
         }
 
+    fun getAllRating(plantName: String): LiveData<Result<ArrayList<Rating>, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                emit(Result.Loading)
+
+                val plantSnapshot = plantRef.get().await()
+                val ratingList = ArrayList<Rating>()
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+
+                    if (plant != null) {
+                        if (plant.name.contains(plantName, ignoreCase = true)) {
+                            val ratingRef = plantData.child("rating").ref
+                            val ratingSnapshot = ratingRef.get().await()
+
+                            for (ratingData in ratingSnapshot.children) {
+                                val rating = ratingData.getValue(Rating::class.java)
+
+                                if (rating != null) {
+                                    ratingList.add(rating)
+                                }
+                            }
+                        }
+                    }
+
+                    Log.i(TAG, "getAllRating: $ratingList")
+                    emit(Result.Success(ratingList))
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get all rating : ${e.message}")
+                emit(Result.Error("Failed to get all rating : ${e.message}"))
+            }
+        }
+
     fun addRating(
         plantName: String, 
         rating: Rating,
@@ -406,31 +441,38 @@ class HerbScanRepository(
             try {
                 emit(Result.Loading)
 
+                Log.i(TAG, "addRating: $imageUris")
+
                 val plantSnapshot = plantRef.get().await()
                 var ratingRef: DatabaseReference? = null
                 var updateRating: Rating = rating
 
                 if (imageUris[0] != Uri.EMPTY) {
+                    Log.i(TAG, "addRating: imageUris[0] != Uri.EMPTY")
                     suspend fun uploadImage(uri: Uri) = suspendCoroutine { continuation ->
-                        val fileName = UUID.randomUUID().toString()
-                        val imageRef = storageRef.child("rating/${fileName}.jpg")
-                        val uploadTask = imageRef.putFile(uri)
+                        if (uri != Uri.EMPTY) {
+                            val fileName = UUID.randomUUID().toString()
+                            val imageRef = storageRef.child("rating/${fileName}.jpg")
+                            val uploadTask = imageRef.putFile(uri)
 
-                        uploadTask.continueWithTask { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    continuation.resumeWithException(it)
+                            uploadTask.continueWithTask { task ->
+                                if (!task.isSuccessful) {
+                                    task.exception?.let {
+                                        continuation.resumeWithException(it)
+                                    }
+                                }
+                                imageRef.downloadUrl
+                            }.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    continuation.resume(task.result.toString())
+                                } else {
+                                    task.exception?.let {
+                                        continuation.resumeWithException(it)
+                                    }
                                 }
                             }
-                            imageRef.downloadUrl
-                        }.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                continuation.resume(task.result.toString())
-                            } else {
-                                task.exception?.let {
-                                    continuation.resumeWithException(it)
-                                }
-                            }
+                        } else {
+                            continuation.resume("")
                         }
                     }
 

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/shades_50"
     android:paddingHorizontal="15dp"
     android:paddingBottom="15dp"
@@ -27,8 +28,20 @@
         app:layout_constraintTop_toTopOf="@id/iv_profile_pic"
         app:layout_constraintBottom_toBottomOf="@id/iv_profile_pic" />
 
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_star_filled"
+        android:layout_marginStart="5dp"
+        android:contentDescription="@string/icon_star"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toTopOf="@id/tv_rating_number"
+        app:layout_constraintBottom_toBottomOf="@id/tv_rating_number"
+        app:layout_constraintEnd_toStartOf="@id/tv_rating_number" />
+
     <TextView
-        style="@style/TextAppearance.AppCompat.TextXxs.Semibold"
+        android:id="@+id/tv_rating_number"
+        style="@style/TextAppearance.AppCompat.TextMd.Semibold"
         android:layout_width="wrap_content"
         android:text="@string/rating_number"
         android:textColor="@color/primary_700"
@@ -57,4 +70,17 @@
         android:layout_marginTop="5dp"
         app:layout_constraintTop_toBottomOf="@id/tv_chat"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_photos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="visible"
+        tools:listitem="@layout/item_list_photo_rating"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_time" />
 </androidx.constraintlayout.widget.ConstraintLayout>

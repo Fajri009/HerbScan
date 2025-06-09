@@ -54,6 +54,7 @@ class DescriptionFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         getAverageRating(plant!!.name)
+        getUserRating(plant!!.name)
     }
 
     private fun formatWithBullets(text: String): CharSequence {

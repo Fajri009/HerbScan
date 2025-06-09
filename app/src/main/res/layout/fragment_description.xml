@@ -72,15 +72,15 @@
 
                 <TextView
                     android:id="@+id/tv_avg_rating"
-                    style="@style/TextAppearance.AppCompat.TextXs.Medium"
+                    style="@style/TextAppearance.AppCompat.TextMd.Medium"
                     android:layout_width="wrap_content"
                     android:text="@string/rating_number"
                     android:textColor="@color/primary_900"
                     android:visibility="gone" />
                 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/ic_star_filled"
                     android:layout_marginStart="5dp"
                     android:contentDescription="@string/icon_star" />
