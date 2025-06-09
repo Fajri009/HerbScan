@@ -245,6 +245,7 @@ class HomeFragment : Fragment() {
         descriptionIntent.putExtra(DescriptionFragment.EXTRA_PLANT, data)
 
         val ratingIntent = Intent(requireContext(), RatingFragment::class.java)
+        Log.i(TAG, "showSelectedPlant:$data")
         ratingIntent.putExtra(RatingFragment.EXTRA_PLANT, data)
     }
 

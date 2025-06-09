@@ -95,7 +95,7 @@
     <string name="rating_from">Diulas oleh %1$s orang</string>
     <string name="icon_star">Ikon Bintang</string>
     <string name="add_rating_2">Tambahkan Ulasan</string>
-    <string name="add_photo">Tambahkan Foto</string>
+    <string name="add_photo">Tambahkan Foto (Opsional)</string>
     <string name="photo_rating">Foto Ulasan</string>
 
     <!-- Discussion -->

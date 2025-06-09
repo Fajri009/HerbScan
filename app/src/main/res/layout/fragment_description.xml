@@ -21,6 +21,7 @@
             android:background="@drawable/outlined_recommendation"
             android:layout_marginTop="5dp"
             android:paddingHorizontal="15dp"
+            android:layout_marginBottom="20dp"
             android:paddingVertical="5dp">
 
             <ImageView

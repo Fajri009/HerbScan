@@ -2,21 +2,35 @@ package com.example.herbscan.ui.rating
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.herbscan.R
+import com.example.herbscan.ViewModelFactory
+import com.example.herbscan.data.network.Result
+import com.example.herbscan.data.network.firebase.Rating
+import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.databinding.ActivityRatingBinding
+import com.example.herbscan.ui.discussion.DiscussionActivity.Companion.TAG
 import com.example.herbscan.ui.profile.editProfile.bottomsheet.OnImageSelectedListener
+import com.example.herbscan.utils.Utils
 
 class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
     private lateinit var binding: ActivityRatingBinding
     private lateinit var photoAdapter: PhotoAdapter
     private val selectedPhotos = mutableListOf<Uri>()
+    private var ratingValue: Float = 0f
+    private var plantName: String = ""
+    private var user: UserAuth? = null
+    private val viewModel by viewModels<RatingViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +43,29 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
             insets
         }
 
+        plantName = intent.getStringExtra(PLANT_NAME)!!
+        Log.i(TAG, "onCreate: $plantName")
+
         setupRecyclerView()
-        setupClickListeners()
-        rating()
+        getCurrentUser()
+
+        binding.apply {
+            ivBack.setOnClickListener {
+                finish()
+            }
+
+            etCamera.setOnClickListener {
+                if (selectedPhotos.size < MAX_PHOTOS) {
+                    showBottomSheet()
+                } else {
+                    Toast.makeText(
+                        this@RatingActivity,
+                        "Maksimal $MAX_PHOTOS foto yang dapat ditambahkan",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -49,27 +83,87 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
         }
     }
 
-    private fun setupClickListeners() {
-        binding.ivBack.setOnClickListener {
-            finish()
-        }
+    private fun getCurrentUser() {
+        viewModel.getCurrentUser().observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
 
-        binding.etCamera.setOnClickListener {
-            if (selectedPhotos.size < MAX_PHOTOS) {
-                showBottomSheet()
-            } else {
-                Toast.makeText(
-                    this,
-                    "Maksimal $MAX_PHOTOS foto yang dapat ditambahkan",
-                    Toast.LENGTH_SHORT
-                ).show()
+                        user = result.data
+                        Log.i(TAG, "getCurrentUser: $user")
+
+                        addRating(plantName)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(this@RatingActivity, "Failed to load user data", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
 
-    private fun rating() {
-        binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+    private fun addRating(plantName: String) {
+        binding.ratingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
+            if (fromUser) {
+                ratingValue = rating
+            }
+        }
 
+        binding.btnSend.setOnClickListener {
+            val imageUris = mutableListOf<Uri>()
+            for (i in 0 until 5) {
+                imageUris.add(
+                    if (i < selectedPhotos.size) selectedPhotos[i]
+                    else Uri.EMPTY
+                )
+            }
+
+            val rating = Rating(
+                "",
+                user!!.uid!!,
+                user!!.profile_pic!!,
+                user!!.first_name + " " + user!!.last_name,
+                ratingValue,
+                ratingValue.toString(),
+                "",
+                "",
+                "",
+                "",
+                "",
+                Utils.getCurrentDate()
+            )
+
+            val etRating = binding.etAddRating.text.toString()
+
+            if (ratingValue == 0f || etRating.isEmpty()) {
+                showToast(getString(R.string.empty_form))
+            } else {
+                binding.btnSend.isEnabled = false
+
+                Log.i(TAG, "imageUri: $imageUris")
+                viewModel.addRating(plantName, rating, imageUris).observe(this) { result ->
+                    if (result != null) {
+                        when (result) {
+                            is Result.Loading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+                            is Result.Success -> {
+                                binding.progressBar.visibility = View.GONE
+                                finish()
+                            }
+                            is Result.Error -> {
+                                binding.progressBar.visibility = View.GONE
+                                Toast.makeText(this@RatingActivity, "Failed to submit rating", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -101,7 +195,12 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
         }
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(this@RatingActivity, message, Toast.LENGTH_SHORT).show()
+    }
+
     companion object {
         private const val MAX_PHOTOS = 5
+        const val PLANT_NAME = "plant_name"
     }
 }

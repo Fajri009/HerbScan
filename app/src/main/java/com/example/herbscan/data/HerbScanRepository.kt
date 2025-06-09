@@ -13,6 +13,7 @@ import com.example.herbscan.data.network.firebase.Favorite
 import com.example.herbscan.data.network.firebase.History
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.data.network.firebase.PredictionResult
+import com.example.herbscan.data.network.firebase.Rating
 import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.tflite.TFLiteHelper
 import com.google.firebase.auth.FirebaseAuth
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -390,6 +392,78 @@ class HerbScanRepository(
                 emit(Result.Error("Failed to get description : ${e.message}"))
             }
         }
+
+    fun addRating(
+        plantName: String, 
+        rating: Rating,
+        imageUris: MutableList<Uri>
+    ): LiveData<Result<String, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                val plantSnapshot = plantRef.get().await()
+                var ratingRef: DatabaseReference? = null
+                var updateRating: Rating = rating
+
+                if (imageUris[0] != Uri.EMPTY) {
+                    suspend fun uploadImage(uri: Uri) = suspendCoroutine { continuation ->
+                        val fileName = UUID.randomUUID().toString()
+                        val imageRef = storageRef.child("rating/${fileName}.jpg")
+                        val uploadTask = imageRef.putFile(uri)
+
+                        uploadTask.continueWithTask { task ->
+                            if (!task.isSuccessful) {
+                                task.exception?.let {
+                                    continuation.resumeWithException(it)
+                                }
+                            }
+                            imageRef.downloadUrl
+                        }.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(task.result.toString())
+                            } else {
+                                task.exception?.let {
+                                    continuation.resumeWithException(it)
+                                }
+                            }
+                        }
+                    }
+
+                    rating.image1 = uploadImage(imageUris[0])
+                    rating.image2 = uploadImage(imageUris[1])
+                    rating.image3 = uploadImage(imageUris[2])
+                    rating.image4 = uploadImage(imageUris[3])
+                    rating.image5 = uploadImage(imageUris[4])
+                }
+
+                Log.i(TAG, "addRating: $rating")
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null) {
+                        if (plant.name.contains(plantName, ignoreCase = true)) {
+                            ratingRef = plantData.child("rating").ref.push()
+                            updateRating = rating.copy(id = ratingRef.key!!)
+
+                            break
+                        }
+                    }
+                }
+
+                if (ratingRef != null) {
+                    ratingRef.setValue(updateRating).await()
+                    emit(Result.Success("Berhasil menambahkan ulasan"))
+                } else {
+                    emit(Result.Error("Tanaman tidak ditemukan"))
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to add rating : ${e.message}")
+                emit(Result.Error("Failed to add rating : ${e.message}"))
+            }
+        }
+
+
 
     fun addDiscussion(plantName: String, discussion: Discussion): LiveData<Result<String, String>> =
         liveData {

@@ -19,6 +19,7 @@ import com.example.herbscan.databinding.ActivityFavoriteBinding
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
 import com.example.herbscan.ui.detail.tab.DescriptionFragment
+import com.example.herbscan.ui.detail.tab.RatingFragment
 
 class FavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFavoriteBinding
@@ -117,5 +118,8 @@ class FavoriteActivity : AppCompatActivity() {
 
         val descriptionIntent = Intent(this, DescriptionFragment::class.java)
         descriptionIntent.putExtra(DescriptionFragment.EXTRA_PLANT, data)
+
+        val ratingIntent = Intent(this, RatingFragment::class.java)
+        ratingIntent.putExtra(RatingFragment.EXTRA_PLANT, data)
     }
 }

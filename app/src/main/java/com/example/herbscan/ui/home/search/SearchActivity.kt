@@ -18,6 +18,7 @@ import com.example.herbscan.data.network.Result
 import com.example.herbscan.ui.detail.DetailActivity
 import com.example.herbscan.ui.detail.tab.BiodataFragment
 import com.example.herbscan.ui.detail.tab.DescriptionFragment
+import com.example.herbscan.ui.detail.tab.RatingFragment
 import com.example.herbscan.ui.home.HomeViewModel
 import java.util.ArrayList
 
@@ -101,6 +102,9 @@ class SearchActivity : AppCompatActivity() {
 
         val descriptionIntent = Intent(this, DescriptionFragment::class.java)
         descriptionIntent.putExtra(DescriptionFragment.EXTRA_PLANT, data)
+
+        val ratingIntent = Intent(this, RatingFragment::class.java)
+        ratingIntent.putExtra(RatingFragment.EXTRA_PLANT, data)
     }
 
     companion object {
