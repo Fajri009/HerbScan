@@ -89,10 +89,11 @@
     <string name="add_rating">Tambah Ulasan</string>
     <string name="rating_number">5.0</string>
 
+
     <!-- Rating -->
     <string name="rating_plant">Nilai Tanaman</string>
     <string name="short_rating">Ulasan Singkat</string>
-    <string name="rating_from">Diulas oleh %1$s orang</string>
+    <string name="rating_from">Diulas oleh %1$d orang</string>
     <string name="icon_star">Ikon Bintang</string>
     <string name="add_rating_2">Tambahkan Ulasan</string>
     <string name="add_photo">Tambahkan Foto (Opsional)</string>

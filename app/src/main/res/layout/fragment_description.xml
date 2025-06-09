@@ -57,6 +57,7 @@
                     android:textColor="@color/shades_100" />
 
                 <TextView
+                    android:id="@+id/tv_user_rating"
                     style="@style/TextAppearance.AppCompat.TextXs.Medium"
                     android:layout_width="wrap_content"
                     android:text="@string/rating_from"
@@ -74,7 +75,8 @@
                     style="@style/TextAppearance.AppCompat.TextXs.Medium"
                     android:layout_width="wrap_content"
                     android:text="@string/rating_number"
-                    android:textColor="@color/primary_900" />
+                    android:textColor="@color/primary_900"
+                    android:visibility="gone" />
                 
                 <ImageView
                     android:layout_width="25dp"

@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import com.example.herbscan.data.network.firebase.Plant
 import com.example.herbscan.databinding.FragmentRatingBinding
 import com.example.herbscan.ui.rating.RatingActivity
-import com.example.herbscan.ui.rating.RatingActivity.Companion
 
 class RatingFragment : Fragment() {
     private lateinit var binding: FragmentRatingBinding

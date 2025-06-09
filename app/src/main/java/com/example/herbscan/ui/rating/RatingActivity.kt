@@ -25,7 +25,7 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
     private lateinit var binding: ActivityRatingBinding
     private lateinit var photoAdapter: PhotoAdapter
     private val selectedPhotos = mutableListOf<Uri>()
-    private var ratingValue: Float = 0f
+    private var ratingValue: Int = 0
     private var plantName: String = ""
     private var user: UserAuth? = null
     private val viewModel by viewModels<RatingViewModel> {
@@ -110,7 +110,7 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
     private fun addRating(plantName: String) {
         binding.ratingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
             if (fromUser) {
-                ratingValue = rating
+                ratingValue = rating.toInt()
             }
         }
 
@@ -123,13 +123,15 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
                 )
             }
 
+            val etRating = binding.etAddRating.text.toString()
+
             val rating = Rating(
                 "",
                 user!!.uid!!,
                 user!!.profile_pic!!,
                 user!!.first_name + " " + user!!.last_name,
                 ratingValue,
-                ratingValue.toString(),
+                etRating,
                 "",
                 "",
                 "",
@@ -138,9 +140,7 @@ class RatingActivity : AppCompatActivity(), OnImageSelectedListener {
                 Utils.getCurrentDate()
             )
 
-            val etRating = binding.etAddRating.text.toString()
-
-            if (ratingValue == 0f || etRating.isEmpty()) {
+            if (ratingValue == 0 || etRating.isEmpty()) {
                 showToast(getString(R.string.empty_form))
             } else {
                 binding.btnSend.isEnabled = false

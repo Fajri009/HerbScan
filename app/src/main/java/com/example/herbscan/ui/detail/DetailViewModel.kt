@@ -24,4 +24,10 @@ class DetailViewModel(private val repository: HerbScanRepository): ViewModel() {
 
     fun getDescription(plantId: String) =
         repository.getDescription(plantId)
+
+    fun getUserRating(plantName: String) =
+        repository.getUserRating(plantName)
+
+    fun getAverageRating(plantName: String) =
+        repository.getAverageRating(plantName)
 }

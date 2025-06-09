@@ -16,6 +16,8 @@ import com.example.herbscan.data.network.firebase.PredictionResult
 import com.example.herbscan.data.network.firebase.Rating
 import com.example.herbscan.data.network.firebase.UserAuth
 import com.example.herbscan.tflite.TFLiteHelper
+import com.example.herbscan.ui.detail.DetailActivity
+import com.example.herbscan.ui.detail.DetailActivity.Companion
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -402,6 +404,8 @@ class HerbScanRepository(
             emit(Result.Loading)
 
             try {
+                emit(Result.Loading)
+
                 val plantSnapshot = plantRef.get().await()
                 var ratingRef: DatabaseReference? = null
                 var updateRating: Rating = rating
@@ -463,7 +467,84 @@ class HerbScanRepository(
             }
         }
 
+    fun getAverageRating(plantName: String): LiveData<Result<Float, String>> =
+        liveData {
+            emit(Result.Loading)
 
+            try {
+                emit(Result.Loading)
+
+                val plantSnapshot = plantRef.get().await()
+                var totalRating = 0f
+                var ratingCount = 0
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+                    if (plant != null) {
+                        if (plant.name.contains(plantName, ignoreCase = true)) {
+                            val ratingRef = plantData.child("rating").ref
+                            val ratingSnapshot = ratingRef.get().await()
+
+                            for (ratingData in ratingSnapshot.children) {
+                                val rating = ratingData.getValue(Rating::class.java)
+
+                                if (rating != null && rating.rating > 0) {
+                                    totalRating += rating.rating.toFloat()
+                                    ratingCount++
+                                    Log.i(TAG, "getAverageRating Rating: ${rating.rating}, Total: $totalRating, Count: $ratingCount")
+                                }
+                            }
+
+                            break
+                        }
+                    }
+                }
+
+                val averageRating = if (ratingCount > 0) {
+                    totalRating / ratingCount
+                } else {
+                    0f
+                }
+
+                Log.i(TAG, "getAverageRating: $averageRating")
+                emit(Result.Success(averageRating))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get average rating : ${e.message}")
+                emit(Result.Error("Failed to get average rating : ${e.message}"))
+            }
+        }
+
+    fun getUserRating(plantName: String): LiveData<Result<Int, String>> =
+        liveData {
+            emit(Result.Loading)
+
+            try {
+                emit(Result.Loading)
+
+                val plantSnapshot = plantRef.get().await()
+                var totalUser = 0
+
+                for (plantData in plantSnapshot.children) {
+                    val plant = plantData.getValue(Plant::class.java)
+
+                    if (plant != null) {
+                        if (plant.name.contains(plantName, ignoreCase = true)) {
+                            val ratingRef = plantData.child("rating").ref
+                            val ratingSnapshot = ratingRef.get().await()
+
+                            totalUser = ratingSnapshot.childrenCount.toInt()
+                            break
+                        }
+                    }
+                }
+
+                Log.i(TAG, "getUserRating: $totalUser")
+                emit(Result.Success(totalUser))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get user rating : ${e.message}")
+                emit(Result.Error("Failed to get user rating : ${e.message}"))
+            }
+        }
 
     fun addDiscussion(plantName: String, discussion: Discussion): LiveData<Result<String, String>> =
         liveData {
@@ -503,6 +584,8 @@ class HerbScanRepository(
             emit(Result.Loading)
 
             try {
+                emit(Result.Loading)
+
                 val plantSnapshot = plantRef.get().await()
                 var discussionCount = 0
 

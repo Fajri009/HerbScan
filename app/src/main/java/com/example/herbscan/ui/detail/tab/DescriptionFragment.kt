@@ -22,21 +22,25 @@ class DescriptionFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
+    private var plant: Plant? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDescriptionBinding.inflate(inflater, container, false)
 
-        val plant = requireActivity().intent.getParcelableExtra<Plant>(EXTRA_PLANT)
+        plant = requireActivity().intent.getParcelableExtra<Plant>(EXTRA_PLANT)
 
         getCurrentPlant(plant!!.name)
+        getUserRating(plant!!.name)
+        getAverageRating(plant!!.name)
 
         binding.apply {
-            if (plant.recommendation.isBlank()) {
+            if (plant!!.recommendation.isBlank()) {
                 layoutRecommend.visibility = View.GONE
             } else {
-                tvRecommend.text = getString(R.string.recommendation_for, plant.recommendation)
+                tvRecommend.text = getString(R.string.recommendation_for, plant!!.recommendation)
 
                 val layoutParams = tvBenefit.layoutParams as ViewGroup.MarginLayoutParams
                 layoutParams.topMargin = resources.getDimensionPixelSize(R.dimen.margin_20dp)
@@ -45,6 +49,11 @@ class DescriptionFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAverageRating(plant!!.name)
     }
 
     private fun formatWithBullets(text: String): CharSequence {
@@ -92,6 +101,37 @@ class DescriptionFragment : Fragment() {
                         }
                     }
                     is Result.Error -> {}
+                }
+            }
+        }
+    }
+
+    private fun getUserRating(plantName: String) {
+        viewModel.getUserRating(plantName).observe(requireActivity()) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> { }
+                    is Result.Success -> {
+                        binding.tvUserRating.text = getString(R.string.rating_from, result.data)
+                    }
+                    is Result.Error -> { }
+                }
+            }
+        }
+    }
+
+    private fun getAverageRating(plantName: String) {
+        viewModel.getAverageRating(plantName).observe(requireActivity()) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> { }
+                    is Result.Success -> {
+                        binding.tvAvgRating.apply {
+                            visibility = View.VISIBLE
+                            text = result.data.toString()
+                        }
+                    }
+                    is Result.Error -> { }
                 }
             }
         }
