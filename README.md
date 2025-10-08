@@ -5,7 +5,7 @@ HerbScan is a mobile application developed to assist users in identifying and le
 
 ## Mockup App
 Click the image to watch the app demo video
-[![HerbScan Demo App](https://github.com/Fajri009/HerbScan/blob/master/HerbScan%20Mockup.jpg)]([https://drive.google.com/file/d/1puA_KeKKk21Coy-frqnlgh9MaMTWLQgD/view?usp=sharing](https://github.com/Fajri009/HerbScan/blob/master/HerbScan%20Mockup.png)](https://drive.google.com/file/d/15xWEyZVyR9nbpMd-24lREe44gDUan-pr/view?usp=drive_link))
+[![HerbScan Demo App](https://github.com/Fajri009/HerbScan/blob/master/HerbScan%20Mockup.png)]([https://drive.google.com/file/d/1puA_KeKKk21Coy-frqnlgh9MaMTWLQgD/view?usp=sharing](https://github.com/Fajri009/HerbScan/blob/master/HerbScan%20Mockup.png)](https://drive.google.com/file/d/15xWEyZVyR9nbpMd-24lREe44gDUan-pr/view?usp=drive_link))
 
 ## Features
 - **AI-Based Plant Classification**: Identify medicinal plants instantly by scanning them with your smartphone camera using a ConvNeXt-powered image classification model.
